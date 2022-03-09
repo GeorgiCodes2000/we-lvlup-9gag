@@ -182,3 +182,16 @@ body{
     cursor: pointer;
 }
  
+
+/* Load memes */
+
+.memeDiv{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: fit-content;
+}
+
+.memeDiv>img {
+    margin: 10px;
+}

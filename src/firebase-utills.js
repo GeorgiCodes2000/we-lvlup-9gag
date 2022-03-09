@@ -22,13 +22,13 @@ const loginUser = () => {
       $('#signUpBtn').text('Logout')
     })
       .catch((err) => {
-        alert(err.message)
-        console.log(err.message)
-      })
-  }
-  
-  const logout = async () => {
-    await firebaseApp.auth().signOut()
-    $('#signUpBtn').text('Sign up')
-    $('#loginBtn').text('Log in')
-  }
+      alert(err.message)
+      console.log(err.message)
+    })
+}
+
+const logout = async () => {
+  await firebaseApp.auth().signOut()
+  $('#signUpBtn').text('Sign up')
+  $('#loginBtn').text('Log in')
+}

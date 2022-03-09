@@ -13,6 +13,7 @@ function changeLoginRegister () {
   })
 }
 
+jQuery(function() {getMemes()})
 
 
 $(function () {
@@ -120,3 +121,4 @@ $(function () {
     })
   })
 })
+
