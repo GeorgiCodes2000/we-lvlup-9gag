@@ -1,71 +1,19 @@
-const firebaseApp = firebase.initializeApp({
-  apiKey: 'AIzaSyArOU_-MYCAx-eODG-iYiFDEoLcwk0BViU',
-  authDomain: 'gagclone-d19b7.firebaseapp.com',
-  projectId: 'gagclone-d19b7',
-  storageBucket: 'gagclone-d19b7.appspot.com',
-  messagingSenderId: '303503067610',
-  appId: '1:303503067610:web:3ab89190aac7d15e5b58e3'
-})
-
 let user = {}
 
-const db = firebaseApp.firestore()
-const auth = firebaseApp.auth()
-
-const registerUser = () => {
-  const email = document.getElementById('email')
-  const password = document.getElementById('password')
-
-  auth.createUserWithEmailAndPassword(email.value, password.value).then((res) => {
-    console.log(res.user)
-    user = firebaseApp.auth().currentUser
-  })
-    .catch((err) => {
-      alert(err.message)
-      console.log(err.message)
-    })
-}
 
 const registerForm = document.getElementById('registerForm')
 if (registerForm) {
   registerForm.addEventListener('submit', registerUser)
 }
 
-const loginUser = () => {
-  const email = document.getElementById('loginEmail').value
-  const password = document.getElementById('loginPassword').value
-  auth.signInWithEmailAndPassword(email, password).then((res) => {
-    user = firebaseApp.auth().currentUser
-  })
-    .catch((err) => {
-      alert(err.message)
-      console.log(err.message)
-    })
-}
-
-// const loginForm = document.getElementById('loginForm')
-// if (loginForm) {
-//   loginForm.addEventListener('submit', (e) => {
-//     e.preventDefault()
-//     loginUser()
-//   })
-// }
-
 function changeLoginRegister () {
   $('#content').empty()
-  $('#loginBtn').text('Hello, ' + user.email)
-  $('#signUpBtn').text('Logout')
   $('#signUpBtn').click(() => {
-  //firebaseApp.auth().signOut()
   logout()
-  $('#loginBtn').text('Login')
   })
-  // $('#loginBtn').off('click')
 }
 
-const logout = async () => {
-  await firebaseApp.auth().signOut()
-}
+
 
 $(function () {
   $('#loginBtn').click(function () {
@@ -75,18 +23,9 @@ $(function () {
         loginForm.addEventListener('submit', (e) => {
           e.preventDefault()
           loginUser()
-          // user = firebaseApp.auth().currentUser
-          if (user.email) {
-            // $('#content').empty()
-            // $('#loginBtn').text('Hello, ' + user.email)
-            // $('#signUpBtn').text('Logout')
-            // $('#signUpBtn').click(() => {
-            // firebaseApp.auth().signOut()
-            // $('#loginBtn').text('Login')
-            // })
-            // $('#loginBtn').off('click')
+      
             changeLoginRegister()
-          }
+          
         })
       }
     })
@@ -101,18 +40,8 @@ $(function () {
         registerForm.addEventListener('submit', (e) => {
           e.preventDefault()
           registerUser()
-          // user = firebaseApp.auth().currentUser
-          if (user.email) {
-            // $('#content').empty()
-            // $('#loginBtn').text('Hello, ' + user.email)
-            // $('#signUpBtn').text('Logout')
-            // $('#signUpBtn').click(() => {
-            // firebaseApp.auth().signOut()
-            // $('#loginBtn').text('Login')
-            // })
-            // $('#loginBtn').off('click')
-            changeLoginRegister()
-          }
+          changeLoginRegister()
+          
         })
       }
     })
@@ -172,9 +101,20 @@ $(function () {
           image = new Image()
           image.src = imageDataUrl
           image.addEventListener('load', () => {
-             updateMemeCanvas(canvas, image, topText.val(), bottomText.val())
-          }, {once: true})
+            updateMemeCanvas(canvas, image, topText.val(), bottomText.val())
+            const btnDownload = document.createElement('button')
+            btnDownload.innerHTML = 'download'
+            document.querySelector('.textInputsFieldsDiv').appendChild(btnDownload)
+            btnDownload.addEventListener('click', (e) => {
+              e.preventDefault()
+              const link = document.createElement('a')
+            link.download = 'meme.png'
+            link.href = canvas.toDataURL()
+            link.click()
+            link.delete
 
+            } )
+          }, { once: true })
         })
       }
     })
