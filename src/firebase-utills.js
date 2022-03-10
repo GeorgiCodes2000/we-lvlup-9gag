@@ -5,7 +5,7 @@ const loginUser = () => {
       user = firebaseApp.auth().currentUser
       $('#loginBtn').text('Hello, ' + user.email)
       $('#signUpBtn').text('Logout')
-    })
+    }).then(()=>getMemes())
       .catch((err) => {
         alert(err.message)
         console.log(err.message)

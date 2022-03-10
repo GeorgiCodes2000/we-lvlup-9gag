@@ -190,8 +190,33 @@ body{
     flex-direction: column;
     width: 50%;
     height: fit-content;
+    align-items: center;
+    justify-content: center;
 }
 
-.memeDiv>img {
+.singleMemeDiv {
     margin: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
+
+.singleMemeDiv>img{
+    max-width: 100%; 
+    height: auto; 
+}
+
+/* Like button */
+.fa {
+    font-size: 50px;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .fa:hover {
+    color: darkblue;
+  }
