@@ -22,7 +22,7 @@ $(function () {
   })
 })
 
-if (user.email === null) {
+if (!user || user.email === null) {
   const registerForm = document.getElementById('registerForm')
   if (registerForm) {
     registerForm.addEventListener('submit', registerUser)
