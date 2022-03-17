@@ -1,5 +1,6 @@
-<input type="file" id="photo" />
-<button onclick="uploadMeme()">Upload Image</button>
-<img id="image"/>
-
-<!-- <script src="../uploadMeme.js"></script> -->
+ 
+<div class=".container-fluid d-flex flex-column w-25 h-100 justify-content-center align-items-center " id="uploadDiv">
+    <input type="file" id="photo" onchange="preview()" class="btn btn-secondary"/>
+    <button onclick="uploadMeme()" class="btn btn-success" id="uploadBtn">Upload Image</button>
+    <img id="image" class="img-fluid"/>
+</div>

@@ -9,74 +9,10 @@ body{
     
 }
 
+
+
 #loginBtn{
-    color: #999;
-    cursor: pointer;
-    font-weight: 700;
-}
-
-#signUpBtn{
-     border: none;
-      border-radius: 18px;
-     font-size: 14px;
-     height: 40px;
-     padding: 0 16px;
-     background-color: #07f;
-     color: #fff;
-    outline: none;
-      
- 
-    
-}
-
-.navbar{
-    height: 7vh;
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 1px solid black;
-    line-height: 48px;
-    font-weight: 700;
-}
-
-.nav-div{
-    height: 100%;
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.left-nav-div{
-    display: flex;
-    flex: 2;
-    height: 50%;
-    justify-content: center;
-    align-items: center;
-}
-
-.right-nav-div{
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    height: 50%;
-}
-
-.left-nav-div>ul{
-    width: 50%;
-    display: flex;
-    list-style: none;
-    justify-content: space-around;
-}
-
-.right-nav-div>ul{
-    width: 50%;
-    display: flex;
-    list-style: none;
-    justify-content: space-around;
-
+    margin-right: 10px;
 }
 
 /* Login page css */
@@ -219,4 +155,12 @@ body{
   
   .fa:hover {
     color: darkblue;
+  }
+
+  #uploadBtn{
+      margin: 10px 0px;
+  }
+
+  .nav-item {
+      cursor: pointer;
   }

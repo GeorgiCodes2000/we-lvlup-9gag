@@ -31,12 +31,13 @@ const loginUser = () => {
       // user = firebaseApp.auth().currentUser
       $('#loginBtn').text('Hello, ' + person.email)
       $('#signUpBtn').text('Logout')
-    })
-    
-      .catch((err) => {
+    }).then(()=>getMemes())
+    .catch((err) => {
       alert(err.message)
       console.log(err.message)
     })
+    
+      
 }
 
 const logout = async () => {

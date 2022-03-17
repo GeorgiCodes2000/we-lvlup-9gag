@@ -3,6 +3,7 @@ async function getMemes () {
   const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
   const data = await response.json()
   memes = data.memes
+  $('#content').empty()
   const content = document.getElementById('content')
   const memeDiv = document.createElement('div')
   memeDiv.className = 'memeDiv'
@@ -114,11 +115,22 @@ function uploadMeme() {
         contentType: file.type
     }
     const task = ref.child(name).put(file, metadata)
-    task.then(snapshot => snapshot.ref.getDownloadURL())
-    .then(url => {
-        const image = document.getElementById('image')
-        image.src = url
-    })
+    // task.then(snapshot => snapshot.ref.getDownloadURL())
+    // .then(url => {
+    //     const image = document.getElementById('image')
+    //     image.src = url
+    // })
 }
+
+function preview(e) {
+  const file = document.getElementById('photo')
+  const image = document.getElementById('image')
+      const [preview] = file.files
+      console.log(preview)
+      if (preview) {
+        image.src = URL.createObjectURL(preview)
+      }
+    }
+
 
 
