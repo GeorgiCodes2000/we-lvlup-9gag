@@ -23,6 +23,7 @@ $(function () {
 })
 
 if (!user || user.email === null) {
+  $('#authDropdown').css('visibility', 'hidden')
   const registerForm = document.getElementById('registerForm')
   if (registerForm) {
     registerForm.addEventListener('submit', registerUser)
@@ -61,6 +62,7 @@ if (!user || user.email === null) {
 } else {
   document.getElementById('loginBtn').innerHTML = 'Hello, ' + user.email
   document.getElementById('signUpBtn').innerHTML = 'Logout'
+  $('#authDropdown').css("visibility", 'show')
   changeLoginRegister()
 }
 
