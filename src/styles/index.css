@@ -15,6 +15,15 @@ body{
     margin-right: 10px;
 }
 
+#navbar{
+    position: fixed;
+    width: 100%;
+}
+
+#photo{
+    margin-top: 80px;
+}
+
 /* Login page css */
 
 .loginDiv{
