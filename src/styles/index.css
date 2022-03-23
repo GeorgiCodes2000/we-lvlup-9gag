@@ -131,6 +131,7 @@ body{
 /* Load memes */
 
 .memeDiv{
+    margin-top: 100px;
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -173,3 +174,15 @@ body{
   .nav-item {
       cursor: pointer;
   }
+  
+  .navbar-light .navbar-nav .nav-link{
+    color: #000;
+}
+
+.seeMoreDiv{
+    margin: 100px 0;
+    border: 1px solid black;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+}

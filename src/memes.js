@@ -28,6 +28,10 @@ async function getMemes () {
       singleMemeDiv.appendChild(meme)
       singleMemeDiv.appendChild(likeBtn)
       likeBtn.addEventListener('click', (x) => toggleLike(x.target))
+      likeBtn.addEventListener('click', (e) => {
+        const element = e.target.parentElement.children[0]
+        saveLikedPost(element.src)
+      })
       memeDiv.appendChild(singleMemeDiv)
     }
   }
@@ -97,7 +101,7 @@ $(function () {
               link.href = canvas.toDataURL()
               link.click()
               link.delete
-            } )
+            })
           }, { once: true })
         })
       }
@@ -138,17 +142,17 @@ function loadUploadedMemes(arr) {
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
   console.log(arr.length)
-  for(let i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     // console.log(1)
     console.log(arr[i])
     arr[i].getDownloadURL().then(url => {
-    const singleMemeDiv = document.createElement('div')
-    singleMemeDiv.className = 'singleMemeDiv'
-    const meme = document.createElement('img')
-    meme.src = url
-    singleMemeDiv.appendChild(meme)
-    memeDiv.appendChild(singleMemeDiv)
-      })
+      const singleMemeDiv = document.createElement('div')
+      singleMemeDiv.className = 'singleMemeDiv'
+      const meme = document.createElement('img')
+      meme.src = url
+      singleMemeDiv.appendChild(meme)
+      memeDiv.appendChild(singleMemeDiv)
+    })
   }
 }
 
@@ -162,17 +166,17 @@ function getUploadsOFUser () {
     .then((res) => {
       res.items.forEach((itemRef) => {
         // All the items under listRef.
-        
+
         // itemRef.getDownloadURL().then(url => {
         //   uploadedMemes.push(url)
         // })
         uploadedMemes.push(itemRef)
       })
-    }).catch((error) => {
+    }).catch(() => {
       // Uh-oh, an error occurred!
     }).finally(() => loadUploadedMemes(uploadedMemes))
-     
-    // console.log(uploadedMemes)
+
+  // console.log(uploadedMemes)
 }
 
 window.onscroll = async function(ev) {
@@ -184,9 +188,8 @@ window.onscroll = async function(ev) {
     function toggleLike (x) {
       x.classList.toggle('fa-thumbs-down')
     }
-  
+
     for (let i = 0; i < memes.length; i++) {
-      
       if (memes[i].preview[3] !== undefined) {
         const singleMemeDiv = document.createElement('div')
         singleMemeDiv.className = 'singleMemeDiv'
@@ -194,6 +197,10 @@ window.onscroll = async function(ev) {
         const likeBtn = document.createElement('i')
         likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
         likeBtn.id = 'like'
+        likeBtn.addEventListener('click', (e) => {
+          const element = e.target.parentElement.children[0]
+          saveLikedPost(element.src)
+        })
         meme.src = memes[i].preview[3]
         singleMemeDiv.appendChild(meme)
         singleMemeDiv.appendChild(likeBtn)
@@ -202,4 +209,64 @@ window.onscroll = async function(ev) {
       }
     }
   }
-};
+}
+
+const saveLikedPost = (src) => {
+  let user = JSON.parse(window.localStorage.getItem('user'))
+  if (user.email != null) {
+    db.collection(user.uid).add({
+      img: src,
+      comments: []
+    })
+      .then((docRef) => {
+        console.log(docRef.id)
+      }).catch((error) => {
+        alert(error)
+      })
+  }
+}
+
+const showLikedPosts = () => {
+  db.collection(user.uid)
+    .get()
+    .then((data) => {
+      logLiked(data.docs)
+    })
+}
+
+const logLiked = (arr) => {
+  $('#content').empty()
+  const content = document.getElementById('content')
+  const memeDiv = document.createElement('div')
+  memeDiv.className = 'memeDiv'
+  content.appendChild(memeDiv)
+
+  function toggleLike (x) {
+    x.classList.toggle('fa-thumbs-up')
+  }
+
+  for (let i = 0; i < arr.length; i++) {
+    console.log(arr[i].data())
+    const singleMemeDiv = document.createElement('div')
+    singleMemeDiv.className = 'singleMemeDiv'
+    const meme = document.createElement('img')
+    const likeBtn = document.createElement('i')
+    likeBtn.classList = 'fa fa-3x  fa-thumbs-down'
+    likeBtn.id = 'like'
+    likeBtn.addEventListener('click', (e) => {
+      const element = e.target.parentElement.children[0]
+    })
+    meme.src = arr[i].data().img
+    meme.id = arr[i].id
+    singleMemeDiv.appendChild(meme)
+    singleMemeDiv.appendChild(likeBtn)
+    likeBtn.addEventListener('click', (x) => toggleLike(x.target))
+    memeDiv.appendChild(singleMemeDiv)
+  }
+  const seeMoreDiv = document.createElement('div')
+  seeMoreDiv.className = 'seeMoreDiv'
+  const seeMoreH2 = document.createElement('h2')
+  seeMoreH2.innerHTML = '😎See more memes😎'
+  seeMoreDiv.appendChild(seeMoreH2)
+  memeDiv.appendChild(seeMoreDiv)
+}
