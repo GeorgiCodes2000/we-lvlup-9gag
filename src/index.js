@@ -14,8 +14,8 @@ function changeLoginRegister () {
 }
 
 $('#fresh').click(() => getDatabeseFreshMemesData())
-$('#shuffle').click(() => getMemes())
-$('.navbar-brand').click(() => getMemes())
+$('#shuffle').click(() => getTrending())
+$('.navbar-brand').click(() => getDatabeseMemesData())
 
 $(function () {
   $('#uploadMeme').click(function () {

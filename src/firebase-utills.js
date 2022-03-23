@@ -10,7 +10,7 @@ const loginUser = () => {
     // user = firebaseApp.auth().currentUser
     $('#loginBtn').text('Hello, ' + person.email)
     $('#signUpBtn').text('Logout')
-  }).then(() => getMemes())
+  }).then(() => getDatabeseMemesData())
     .catch((err) => {
       alert(err.message)
       console.log(err.message)
@@ -30,7 +30,7 @@ const registerUser = () => {
     // user = firebaseApp.auth().currentUser
     $('#loginBtn').text('Hello, ' + person.email)
     $('#signUpBtn').text('Logout')
-  }).then(() => getMemes())
+  }).then(() => getDatabeseMemesData())
     .catch((err) => {
       alert(err.message)
       console.log(err.message)

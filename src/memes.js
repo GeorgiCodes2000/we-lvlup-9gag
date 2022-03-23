@@ -19,73 +19,7 @@ const showToast = (text) => {
   }).showToast()
 }
 
-let memes = []
-// async function getMemes () {
-//   const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
-//   const data = await response.json()
-//   memes = data.memes
-//   $('#content').empty()
-//   const content = document.getElementById('content')
-//   const memeDiv = document.createElement('div')
-//   memeDiv.className = 'memeDiv'
-//   content.appendChild(memeDiv)
-//   function toggleLike (x) {
-//     x.classList.toggle('fa-thumbs-down')
-//   }
-
-//   for (let i = 0; i < memes.length; i++) {
-//     if (memes[i].preview[3] !== undefined) {
-//       const singleMemeDiv = document.createElement('div')
-//       singleMemeDiv.className = 'singleMemeDiv'
-//       const title = document.createElement('h3')
-//       title.className = 'author'
-//       title.innerHTML = 'Author: ' + memes[i].author
-//       const meme = document.createElement('img')
-//       const likesCount = document.createElement('button')
-//       likesCount.classList = 'btn btn-info'
-//       likesCount.id = 'likesCount'
-//       likesCount.innerHTML = memes[i].ups
-//       const likeBtn = document.createElement('i')
-//       likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
-//       likeBtn.id = 'like'
-//       meme.src = memes[i].preview[3]
-//       singleMemeDiv.appendChild(title)
-//       singleMemeDiv.appendChild(meme)
-//       singleMemeDiv.appendChild(likesCount)
-//       singleMemeDiv.appendChild(likeBtn)
-//       likeBtn.addEventListener('click', (x) => toggleLike(x.target))
-//       likeBtn.addEventListener('click', (e) => {
-//         const author = e.target.parentElement.children[0]
-//         const element = e.target.parentElement.children[1]
-//         const ups = e.target.parentElement.children[2]
-//         let updateLikes = parseInt(likesCount.innerHTML)
-//         likesCount.innerHTML = ++updateLikes
-//         saveLikedPost(element.src, author.innerHTML, ups.innerHTML)
-//         showToast('Post saved to your liked')
-//       })
-//       memeDiv.appendChild(singleMemeDiv)
-//     }
-//   }
-// }
-
-
-const getDatabeseMemesData = () => {
-  db.collection('memes')
-    .get()
-    .then((data) => {
-      showMemes(data.docs)
-    })
-}
-
-const getDatabeseFreshMemesData = () => {
-  db.collection('memes')
-    .get()
-    .then((data) => {
-      freshMemes(data.docs)
-    })
-}
-
-const showMemes = (arr) => {
+function loopAndAndDomAdd (arr) {
   $('#content').empty()
   const content = document.getElementById('content')
   const memeDiv = document.createElement('div')
@@ -95,7 +29,6 @@ const showMemes = (arr) => {
   function toggleLike (x) {
     x.classList.toggle('fa-thumbs-down')
   }
-
   for (let i = 0; i < arr.length; i++) {
     const singleMemeDiv = document.createElement('div')
     singleMemeDiv.className = 'singleMemeDiv'
@@ -121,52 +54,52 @@ const showMemes = (arr) => {
   }
 }
 
-const freshMemes = (arr) => {
-  console.log('fresh Memes here')
-  $('#content').empty()
-  const content = document.getElementById('content')
-  const memeDiv = document.createElement('div')
-  memeDiv.className = 'memeDiv'
-  content.appendChild(memeDiv)
+let memes = []
 
-  function toggleLike (x) {
-    x.classList.toggle('fa-thumbs-down')
-  }
-
-  console.log(arr)
-  const freshMemesArr = arr.slice().sort(function(a, b){
-   
-    return new Date(b.data().uploaded) - new Date(a.data().uploaded);
-});
-  
-  
-
-  for (let i = 0; i < freshMemesArr.length; i++) {
-    const singleMemeDiv = document.createElement('div')
-    singleMemeDiv.className = 'singleMemeDiv'
-    singleMemeDiv.id = freshMemesArr[i].id
-    const author = document.createElement('h3')
-    author.innerHTML = freshMemesArr[i].data().author
-    const likesCount = document.createElement('button')
-    likesCount.classList = 'btn btn-info'
-    likesCount.innerHTML = freshMemesArr[i].data().ups
-    likesCount.id = 'likesCount'
-    const meme = document.createElement('img')
-    const likeBtn = document.createElement('i')
-    likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
-    likeBtn.id = 'like'
-    meme.src = freshMemesArr[i].data().img
-    meme.id = freshMemesArr[i].id
-    singleMemeDiv.appendChild(author)
-    singleMemeDiv.appendChild(meme)
-    singleMemeDiv.appendChild(likesCount)
-    singleMemeDiv.appendChild(likeBtn)
-    likeBtn.addEventListener('click', (x) => toggleLike(x.target))
-    memeDiv.appendChild(singleMemeDiv)
-  }
+const getDatabeseMemesData = () => {
+  db.collection('memes')
+    .get()
+    .then((data) => {
+      showMemes(data.docs)
+    })
 }
 
+const getDatabeseFreshMemesData = () => {
+  db.collection('memes')
+    .get()
+    .then((data) => {
+      freshMemes(data.docs)
+    })
+}
 
+const getTrending = () => {
+  db.collection('memes')
+    .get()
+    .then((data) => {
+      trendingMemes(data.docs)
+    })
+}
+
+const showMemes = (arr) => {
+  loopAndAndDomAdd(arr)
+}
+
+const freshMemes = (arr) => {
+  const freshMemesArr = arr.slice().sort(function (a, b) {
+    return new Date(b.data().uploaded) - new Date(a.data().uploaded)
+  })
+
+  loopAndAndDomAdd(freshMemesArr)
+}
+
+const trendingMemes = (arr) => {
+  const trendingMemesArr = arr.slice().sort(function (a, b) {
+    console.log(a.data().ups)
+    return (b.data().ups) - (a.data().ups)
+  })
+
+  loopAndAndDomAdd(trendingMemesArr)
+}
 
 function updateMemeCanvas (canvas, image, topText, bottomText) {
   const ctx = canvas.getContext('2d')
@@ -444,14 +377,12 @@ const dislike = (post) => {
 //   memeDiv.appendChild(seeMoreDiv)
 // }
 
-
-
 //FILL WITH MEMES
 // async function fillBase () {
 //   const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
 //   const data = await response.json()
 //   memes = data.memes
-   
+
 //   for (let i = 0; i < memes.length; i++) {
 //     if(memes[i].preview[3]){
 //       db.collection('memes').add({
@@ -468,5 +399,5 @@ const dislike = (post) => {
 //           alert(error)
 //         })
 //     }
-    
+
 // }}
