@@ -155,8 +155,6 @@ function loadUploadedMemes(arr) {
   content.appendChild(memeDiv)
   console.log(arr.length)
   for (let i = 0; i < arr.length; i++) {
-    // console.log(1)
-    console.log(arr[i])
     arr[i].getDownloadURL().then(url => {
       const singleMemeDiv = document.createElement('div')
       singleMemeDiv.className = 'singleMemeDiv'
@@ -169,26 +167,16 @@ function loadUploadedMemes(arr) {
 }
 
 function getUploadsOFUser () {
-  console.log(user)
   const uploadedMemes = []
   let storageRef = storage.ref()
   let listRef = storageRef.child(user.uid + '/')
-  // Find all the prefixes and items.
   listRef.listAll()
     .then((res) => {
       res.items.forEach((itemRef) => {
-        // All the items under listRef.
-
-        // itemRef.getDownloadURL().then(url => {
-        //   uploadedMemes.push(url)
-        // })
         uploadedMemes.push(itemRef)
       })
     }).catch(() => {
-      // Uh-oh, an error occurred!
     }).finally(() => loadUploadedMemes(uploadedMemes))
-
-  // console.log(uploadedMemes)
 }
 
 window.onscroll = async function(ev) {
@@ -239,7 +227,6 @@ window.onscroll = async function(ev) {
 const saveLikedPost = (src, author, ups) => {
   let user = JSON.parse(window.localStorage.getItem('user'))
   let parsedUps = parseInt(ups)
-  parsedUps++
   if (user.email != null) {
     db.collection(user.uid).add({
       img: src,
@@ -263,6 +250,12 @@ const showLikedPosts = () => {
     })
 }
 
+const unLike = (post) => {
+  db.collection(user.uid).doc(post).delete()
+  .then(() => alert('Remove from liked'))
+  document.getElementById(post).remove()
+}
+
 const logLiked = (arr) => {
   $('#content').empty()
   const content = document.getElementById('content')
@@ -270,17 +263,19 @@ const logLiked = (arr) => {
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
 
-  function toggleLike (x) {
+  function toggleLike (id, x) {
     if (x.classList.value === 'fa fa-3x  fa-thumbs-down') {
       x.classList = 'fa fa-3x  fa-thumbs-up'
     } else {
       x.classList = 'fa fa-3x  fa-thumbs-down'
     }
+    unLike(id)
   }
 
   for (let i = 0; i < arr.length; i++) {
     const singleMemeDiv = document.createElement('div')
     singleMemeDiv.className = 'singleMemeDiv'
+    singleMemeDiv.id = arr[i].id
     const author = document.createElement('h3')
     author.innerHTML = arr[i].data().author
     const likesCount = document.createElement('button')
@@ -297,7 +292,7 @@ const logLiked = (arr) => {
     singleMemeDiv.appendChild(meme)
     singleMemeDiv.appendChild(likesCount)
     singleMemeDiv.appendChild(likeBtn)
-    likeBtn.addEventListener('click', (x) => toggleLike(x.target))
+    likeBtn.addEventListener('click', (x) => toggleLike(meme.id, x.target))
     memeDiv.appendChild(singleMemeDiv)
   }
   const seeMoreDiv = document.createElement('div')
