@@ -11,7 +11,6 @@ async function getMemes () {
   const memeDiv = document.createElement('div')
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
-
   function toggleLike (x) {
     x.classList.toggle('fa-thumbs-down')
   }
@@ -20,17 +19,30 @@ async function getMemes () {
     if (memes[i].preview[3] !== undefined) {
       const singleMemeDiv = document.createElement('div')
       singleMemeDiv.className = 'singleMemeDiv'
+      const title = document.createElement('h3')
+      title.className = 'author'
+      title.innerHTML = 'Author: ' + memes[i].author
       const meme = document.createElement('img')
+      const likesCount = document.createElement('button')
+      likesCount.classList = 'btn btn-info'
+      likesCount.id = 'likesCount'
+      likesCount.innerHTML = memes[i].ups
       const likeBtn = document.createElement('i')
       likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
       likeBtn.id = 'like'
       meme.src = memes[i].preview[3]
+      singleMemeDiv.appendChild(title)
       singleMemeDiv.appendChild(meme)
+      singleMemeDiv.appendChild(likesCount)
       singleMemeDiv.appendChild(likeBtn)
       likeBtn.addEventListener('click', (x) => toggleLike(x.target))
       likeBtn.addEventListener('click', (e) => {
-        const element = e.target.parentElement.children[0]
-        saveLikedPost(element.src)
+        const author = e.target.parentElement.children[0]
+        const element = e.target.parentElement.children[1]
+        const ups = e.target.parentElement.children[2]
+        let updateLikes = parseInt(likesCount.innerHTML)
+        likesCount.innerHTML = ++updateLikes
+        saveLikedPost(element.src, author.innerHTML, ups.innerHTML)
       })
       memeDiv.appendChild(singleMemeDiv)
     }
@@ -195,14 +207,27 @@ window.onscroll = async function(ev) {
         singleMemeDiv.className = 'singleMemeDiv'
         const meme = document.createElement('img')
         const likeBtn = document.createElement('i')
+        const title = document.createElement('h3')
+        const likesCount = document.createElement('button')
+        likesCount.classList = 'btn btn-info'
+        likesCount.id = 'likesCount'
+        likesCount.innerHTML = memes[i].ups
+        title.className = 'author'
+        title.innerHTML = 'Author: ' + memes[i].author
         likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
         likeBtn.id = 'like'
         likeBtn.addEventListener('click', (e) => {
-          const element = e.target.parentElement.children[0]
-          saveLikedPost(element.src)
+          const author = e.target.parentElement.children[0]
+          const element = e.target.parentElement.children[1]
+          const likes = e.target.parentElement.children[2]
+          let updateLikes = parseInt(likesCount.innerHTML)
+          likesCount.innerHTML = ++updateLikes
+          saveLikedPost(element.src, author.innerHTML, likes.innerHTML)
         })
         meme.src = memes[i].preview[3]
+        singleMemeDiv.appendChild(title)
         singleMemeDiv.appendChild(meme)
+        singleMemeDiv.appendChild(likesCount)
         singleMemeDiv.appendChild(likeBtn)
         likeBtn.addEventListener('click', (x) => toggleLike(x.target))
         memeDiv.appendChild(singleMemeDiv)
@@ -211,12 +236,16 @@ window.onscroll = async function(ev) {
   }
 }
 
-const saveLikedPost = (src) => {
+const saveLikedPost = (src, author, ups) => {
   let user = JSON.parse(window.localStorage.getItem('user'))
+  let parsedUps = parseInt(ups)
+  parsedUps++
   if (user.email != null) {
     db.collection(user.uid).add({
       img: src,
-      comments: []
+      comments: [],
+      author: author,
+      ups: parsedUps
     })
       .then((docRef) => {
         console.log(docRef.id)
@@ -242,23 +271,31 @@ const logLiked = (arr) => {
   content.appendChild(memeDiv)
 
   function toggleLike (x) {
-    x.classList.toggle('fa-thumbs-up')
+    if (x.classList.value === 'fa fa-3x  fa-thumbs-down') {
+      x.classList = 'fa fa-3x  fa-thumbs-up'
+    } else {
+      x.classList = 'fa fa-3x  fa-thumbs-down'
+    }
   }
 
   for (let i = 0; i < arr.length; i++) {
-    console.log(arr[i].data())
     const singleMemeDiv = document.createElement('div')
     singleMemeDiv.className = 'singleMemeDiv'
+    const author = document.createElement('h3')
+    author.innerHTML = arr[i].data().author
+    const likesCount = document.createElement('button')
+    likesCount.classList = 'btn btn-info'
+    likesCount.innerHTML = arr[i].data().ups
+    likesCount.id = 'likesCount'
     const meme = document.createElement('img')
     const likeBtn = document.createElement('i')
     likeBtn.classList = 'fa fa-3x  fa-thumbs-down'
     likeBtn.id = 'like'
-    likeBtn.addEventListener('click', (e) => {
-      const element = e.target.parentElement.children[0]
-    })
     meme.src = arr[i].data().img
     meme.id = arr[i].id
+    singleMemeDiv.appendChild(author)
     singleMemeDiv.appendChild(meme)
+    singleMemeDiv.appendChild(likesCount)
     singleMemeDiv.appendChild(likeBtn)
     likeBtn.addEventListener('click', (x) => toggleLike(x.target))
     memeDiv.appendChild(singleMemeDiv)

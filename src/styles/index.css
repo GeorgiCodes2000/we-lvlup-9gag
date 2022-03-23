@@ -186,3 +186,12 @@ body{
     text-align: center;
     padding: 10px;
 }
+
+.author {
+    margin: 40px 0;
+}
+
+#likesCount{
+    margin-top: 10px;
+    color: #fff;
+}
