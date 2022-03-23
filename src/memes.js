@@ -2,6 +2,18 @@
 /* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
 
+function removeItemAll (arr, value) {
+  let i = 0
+  while (i < arr.length) {
+    if (arr[i] === value) {
+      arr.splice(i, 1)
+    } else {
+      ++i
+    }
+  }
+  return arr
+}
+
 const showToast = (text) => {
   Toastify({
     text: text,
@@ -26,8 +38,9 @@ function loopAndAndDomAdd (arr) {
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
 
-  function toggleLike (x) {
+  function toggleLike (singleMemeDiv, x, likesCount) {
     x.classList.toggle('fa-thumbs-down')
+    like(singleMemeDiv.id, likesCount)
   }
   for (let i = 0; i < arr.length; i++) {
     const singleMemeDiv = document.createElement('div')
@@ -38,7 +51,7 @@ function loopAndAndDomAdd (arr) {
     const likesCount = document.createElement('button')
     likesCount.classList = 'btn btn-info'
     likesCount.innerHTML = arr[i].data().ups
-    likesCount.id = 'likesCount'
+    likesCount.id = 'likesCount' + arr[i].id
     const meme = document.createElement('img')
     const likeBtn = document.createElement('i')
     likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
@@ -49,7 +62,7 @@ function loopAndAndDomAdd (arr) {
     singleMemeDiv.appendChild(meme)
     singleMemeDiv.appendChild(likesCount)
     singleMemeDiv.appendChild(likeBtn)
-    likeBtn.addEventListener('click', (x) => toggleLike(x.target))
+    likeBtn.addEventListener('click', (x) => toggleLike(singleMemeDiv, x.target, likesCount.id))
     memeDiv.appendChild(singleMemeDiv)
   }
 }
@@ -297,38 +310,73 @@ window.onscroll = async function (ev) {
   }
 }
 
-const saveLikedPost = (src, author, ups) => {
+const like = (id, likesCount) => {
+  console.log(likesCount)
   let user = JSON.parse(window.localStorage.getItem('user'))
-  let parsedUps = parseInt(ups)
-  if (user.email != null) {
-    db.collection(user.uid).add({
-      img: src,
-      comments: [],
-      author: author,
-      ups: parsedUps
-    })
-      .then((docRef) => {
-        console.log(docRef.id)
-      }).catch((error) => {
-        alert(error)
+  const docRef = db.collection('memes').doc(id)
+
+  docRef.get().then((doc) => {
+    if (doc.exists && doc.data().likedBy.includes(user.email) === false) {
+      console.log('Document data:', doc.data().likedBy)
+      docRef.update({
+        ups: Number(doc.data().ups) + 1,
+        likedBy: [...doc.data().likedBy, user.email]
+      }).then(() => {
+        showToast('Post liked')
+        let ups = doc.data().ups + 1
+        document.getElementById(likesCount).innerHTML = ups
       })
-  }
+    } else {
+      // doc.data() will be undefined in this case
+      console.log(doc.data().likedBy)
+      docRef.update({
+        ups: Number(doc.data().ups) - 1,
+        likedBy: removeItemAll(doc.data().likedBy, user.email)
+      }).then(() => {
+        showToast('You no longer like the post')
+        let ups = doc.data().ups - 1
+        document.getElementById(likesCount).innerHTML = ups
+         
+      })
+    }
+  }).catch((error) => {
+    console.log('Error getting document:', error)
+  })
 }
 
-const showLikedPosts = () => {
-  db.collection(user.uid)
-    .get()
-    .then((data) => {
-      logLiked(data.docs)
-    })
-}
 
-const dislike = (post) => {
-  db.collection(user.uid).doc(post).delete()
-    .then(() => console.log('Remove from liked'))
-  document.getElementById(post).remove()
-  showToast('You no longer like this post')
-}
+// const saveLikedPost = (src, author, ups) => {
+//   let user = JSON.parse(window.localStorage.getItem('user'))
+//   let parsedUps = parseInt(ups)
+//   if (user.email != null) {
+//     db.collection(user.uid).add({
+//       img: src,
+//       comments: [],
+//       author: author,
+//       ups: parsedUps
+//     })
+//       .then((docRef) => {
+//         console.log(docRef.id)
+//       }).catch((error) => {
+//         alert(error)
+//       })
+//   }
+// }
+
+// const showLikedPosts = () => {
+//   db.collection(user.uid)
+//     .get()
+//     .then((data) => {
+//       logLiked(data.docs)
+//     })
+// }
+
+// const dislike = (post) => {
+//   db.collection(user.uid).doc(post).delete()
+//     .then(() => console.log('Remove from liked'))
+//   document.getElementById(post).remove()
+//   showToast('You no longer like this post')
+// }
 
 // const logLiked = (arr) => {
 //   $('#content').empty()
@@ -391,7 +439,8 @@ const dislike = (post) => {
 //         author: memes[i].author,
 //         ups: memes[i].ups,
 //         uploader: 'unknown',
-//         uploaded: new Date().toLocaleString()
+//         uploaded: new Date().toLocaleString(),
+//         likedBy: []
 //       })
 //         .then((docRef) => {
 //           console.log(docRef.id)
