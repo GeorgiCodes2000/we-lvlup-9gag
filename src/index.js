@@ -1,7 +1,10 @@
 /* eslint-disable no-undef */
 // let user = {}
+
+ 
+
 let user = JSON.parse(window.localStorage.getItem('user'))
-jQuery(function () { getMemes() })
+jQuery(function () { getDatabeseMemesData() })
 
 function changeLoginRegister () {
   $('#content').empty()
@@ -10,7 +13,7 @@ function changeLoginRegister () {
   })
 }
 
-$('#fresh').click(() => getMemes())
+$('#fresh').click(() => getDatabeseFreshMemesData())
 $('#shuffle').click(() => getMemes())
 $('.navbar-brand').click(() => getMemes())
 
