@@ -1,6 +1,24 @@
 /* eslint-disable no-undef */
 /* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
+
+const showToast = (text) => {
+  Toastify({
+    text: text,
+    duration: 3000,
+    destination: 'https://github.com/apvarun/toastify-js',
+    newWindow: true,
+    close: true,
+    gravity: 'top', // `top` or `bottom`
+    position: 'center', // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    style: {
+      background: 'linear-gradient(to right, #00b09b, #96c93d)',
+    },
+    onClick: function () {} // Callback after click
+  }).showToast()
+}
+
 let memes = []
 async function getMemes () {
   const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
@@ -43,6 +61,7 @@ async function getMemes () {
         let updateLikes = parseInt(likesCount.innerHTML)
         likesCount.innerHTML = ++updateLikes
         saveLikedPost(element.src, author.innerHTML, ups.innerHTML)
+        showToast('Post saved to your liked')
       })
       memeDiv.appendChild(singleMemeDiv)
     }
@@ -130,6 +149,7 @@ function uploadMeme () {
     contentType: file.type
   }
   const task = ref.child(name).put(file, metadata)
+  showToast('Image successfully uploaded')
   // task.then(snapshot => snapshot.ref.getDownloadURL())
   // .then(url => {
   //     const image = document.getElementById('image')
@@ -147,7 +167,7 @@ function preview (e) {
   }
 }
 
-function loadUploadedMemes(arr) {
+function loadUploadedMemes (arr) {
   $('#content').empty()
   const content = document.getElementById('content')
   const memeDiv = document.createElement('div')
@@ -179,7 +199,7 @@ function getUploadsOFUser () {
     }).finally(() => loadUploadedMemes(uploadedMemes))
 }
 
-window.onscroll = async function(ev) {
+window.onscroll = async function (ev) {
   if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
     const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
     const data = await response.json()
@@ -211,6 +231,7 @@ window.onscroll = async function(ev) {
           let updateLikes = parseInt(likesCount.innerHTML)
           likesCount.innerHTML = ++updateLikes
           saveLikedPost(element.src, author.innerHTML, likes.innerHTML)
+          showToast('Post saved to your liked')
         })
         meme.src = memes[i].preview[3]
         singleMemeDiv.appendChild(title)
@@ -250,10 +271,11 @@ const showLikedPosts = () => {
     })
 }
 
-const unLike = (post) => {
+const dislike = (post) => {
   db.collection(user.uid).doc(post).delete()
-  .then(() => alert('Remove from liked'))
+    .then(() => console.log('Remove from liked'))
   document.getElementById(post).remove()
+  showToast('You no longer like this post')
 }
 
 const logLiked = (arr) => {
@@ -269,7 +291,7 @@ const logLiked = (arr) => {
     } else {
       x.classList = 'fa fa-3x  fa-thumbs-down'
     }
-    unLike(id)
+    dislike(id)
   }
 
   for (let i = 0; i < arr.length; i++) {
