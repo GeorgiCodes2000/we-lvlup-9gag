@@ -25,7 +25,7 @@ const showToast = (text) => {
     position: 'center', // `left`, `center` or `right`
     stopOnFocus: true, // Prevents dismissing of toast on hover
     style: {
-      background: 'linear-gradient(to right, #00b09b, #96c93d)',
+      background: 'linear-gradient(to right, #00b09b, #96c93d)'
     },
     onClick: function () {} // Callback after click
   }).showToast()
@@ -62,6 +62,26 @@ function loopAndAndDomAdd (arr) {
     singleMemeDiv.appendChild(meme)
     singleMemeDiv.appendChild(likesCount)
     singleMemeDiv.appendChild(likeBtn)
+    meme.addEventListener('click', () => {
+      (function a () {
+        $('#content').load('http://127.0.0.1:5500/src/pages/post.html', function () {
+          showComments(arr[i].id)
+          document.getElementById('change').id = arr[i].id
+          const postImg = document.getElementById('post-img')
+          const postLike = document.getElementById('post-like')
+          const postLikeBtn = document.getElementById('post-like-button')
+          postLike.innerHTML = arr[i].data().ups
+          postImg.src = arr[i].data().img
+          postLikeBtn.addEventListener('click', (x) => toggleLike(arr[i], x.target, postLike.id))
+          const commentForm = document.getElementById('comment-form')
+          commentForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+            comment(arr[i].id)
+          })
+        })
+      })()
+    })
+
     likeBtn.addEventListener('click', (x) => toggleLike(singleMemeDiv, x.target, likesCount.id))
     memeDiv.appendChild(singleMemeDiv)
   }
@@ -233,7 +253,8 @@ function loadUploadedMemes (arr) {
           author: user.email,
           uploader: user.email,
           ups: 0,
-          uploaded: new Date().toLocaleString()
+          uploaded: new Date().toLocaleString(),
+          likedBy: []
         })
           .then((docRef) => {
             console.log(docRef.id)
@@ -311,12 +332,12 @@ window.onscroll = async function (ev) {
 }
 
 const like = (id, likesCount) => {
-  console.log(likesCount)
+  console.log(id)
   let user = JSON.parse(window.localStorage.getItem('user'))
   const docRef = db.collection('memes').doc(id)
 
   docRef.get().then((doc) => {
-    if (doc.exists && doc.data().likedBy.includes(user.email) === false) {
+    if (user.email && doc.exists && doc.data().likedBy.includes(user.email) === false) {
       console.log('Document data:', doc.data().likedBy)
       docRef.update({
         ups: Number(doc.data().ups) + 1,
@@ -326,7 +347,7 @@ const like = (id, likesCount) => {
         let ups = doc.data().ups + 1
         document.getElementById(likesCount).innerHTML = ups
       })
-    } else {
+    } else if (user.email) {
       // doc.data() will be undefined in this case
       console.log(doc.data().likedBy)
       docRef.update({
@@ -336,14 +357,96 @@ const like = (id, likesCount) => {
         showToast('You no longer like the post')
         let ups = doc.data().ups - 1
         document.getElementById(likesCount).innerHTML = ups
-         
       })
+    } else {
+      showToast('You have to be logged to like')
     }
   }).catch((error) => {
     console.log('Error getting document:', error)
   })
 }
 
+const showComments = (id) => {
+  let user = JSON.parse(window.localStorage.getItem('user'))
+  const docRef = db.collection('memes').doc(id)
+  docRef.get().then((doc) => {
+    if (doc.exists) {
+      const fatherOfComments = document.getElementById('commentsFather')
+
+      for (let i = 0; i < doc.data().comments.length; i++) {
+        const commentToAppend =
+        `
+        <div class="card mb-3" id="singleCommentToAppend">
+        <div class="card-body">
+          <div class="d-flex flex-start">
+            <div class="w-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="text-primary fw-bold mb-0">
+                  ${doc.data().comments[i].user}
+                  <span class="text-dark ms-2">${doc.data().comments[i].comment}</span>
+                </h6>
+                <p class="mb-0">2 days ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        `
+        fatherOfComments.insertAdjacentHTML('beforebegin', commentToAppend)
+      }
+    }
+  })
+}
+
+const comment = (id) => {
+  console.log(id)
+  const commentInp = document.getElementById('commentInp')
+  let user = JSON.parse(window.localStorage.getItem('user'))
+  const docRef = db.collection('memes').doc(id)
+  docRef.get().then((doc) => {
+    if (doc.exists) {
+      console.log(doc.data())
+      docRef.update({
+        comments: [...doc.data().comments, { comment: commentInp.value, user: user.email }]
+      }).then(() => {
+        showToast('Comment added')
+        showComments(id)
+      })
+    }
+  }).catch((err) => {
+    console.log(err)
+  })
+
+  
+  // docRef.get().then((doc) => {
+  //   if (user.email && doc.exists && doc.data().likedBy.includes(user.email) === false) {
+  //     console.log('Document data:', doc.data().likedBy)
+  //     docRef.update({
+  //       ups: Number(doc.data().ups) + 1,
+  //       likedBy: [...doc.data().likedBy, user.email]
+  //     }).then(() => {
+  //       showToast('Post liked')
+  //       let ups = doc.data().ups + 1
+  //       document.getElementById(likesCount).innerHTML = ups
+  //     })
+  //   } else if (user.email) {
+  //     // doc.data() will be undefined in this case
+  //     console.log(doc.data().likedBy)
+  //     docRef.update({
+  //       ups: Number(doc.data().ups) - 1,
+  //       likedBy: removeItemAll(doc.data().likedBy, user.email)
+  //     }).then(() => {
+  //       showToast('You no longer like the post')
+  //       let ups = doc.data().ups - 1
+  //       document.getElementById(likesCount).innerHTML = ups
+  //     })
+  //   } else {
+  //     showToast('You have to be logged to like')
+  //   }
+  // }).catch((error) => {
+  //   console.log('Error getting document:', error)
+  // })
+}
 
 // const saveLikedPost = (src, author, ups) => {
 //   let user = JSON.parse(window.localStorage.getItem('user'))
@@ -425,7 +528,7 @@ const like = (id, likesCount) => {
 //   memeDiv.appendChild(seeMoreDiv)
 // }
 
-//FILL WITH MEMES
+// FILL WITH MEMES
 // async function fillBase () {
 //   const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
 //   const data = await response.json()

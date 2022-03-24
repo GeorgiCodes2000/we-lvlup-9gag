@@ -68,3 +68,5 @@ if (!user || user.email === null) {
   $('#authDropdown').css('visibility', 'show')
   changeLoginRegister()
 }
+
+
