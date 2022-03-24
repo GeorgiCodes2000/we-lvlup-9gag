@@ -410,14 +410,33 @@ const comment = (id) => {
         comments: [...doc.data().comments, { comment: commentInp.value, user: user.email }]
       }).then(() => {
         showToast('Comment added')
-        showComments(id)
+        const fatherOfComments = document.getElementById('commentsFather')
+        const commentToAppend =
+        `
+        <div class="card mb-3" id="singleCommentToAppend">
+        <div class="card-body">
+          <div class="d-flex flex-start">
+            <div class="w-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="text-primary fw-bold mb-0">
+                  ${user.email}
+                  <span class="text-dark ms-2">${commentInp.value}</span>
+                </h6>
+                <p class="mb-0">2 days ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        `
+        fatherOfComments.insertAdjacentHTML('beforebegin', commentToAppend)
+        commentInp.value = ''
       })
     }
   }).catch((err) => {
     console.log(err)
   })
 
-  
   // docRef.get().then((doc) => {
   //   if (user.email && doc.exists && doc.data().likedBy.includes(user.email) === false) {
   //     console.log('Document data:', doc.data().likedBy)
