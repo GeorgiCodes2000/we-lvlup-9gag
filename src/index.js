@@ -23,6 +23,12 @@ $(function () {
   })
 })
 
+$(function () {
+  $('#seeUploads').click(function () {
+    getUploadsOFUser()
+  })
+})
+
 if (!user || user.email === null) {
   $('#authDropdown').css('visibility', 'hidden')
   const registerForm = document.getElementById('registerForm')

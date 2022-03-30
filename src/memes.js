@@ -18,7 +18,7 @@ const showToast = (text) => {
   Toastify({
     text: text,
     duration: 3000,
-    destination: 'https://github.com/apvarun/toastify-js',
+    destination: '',
     newWindow: true,
     close: true,
     gravity: 'top', // `top` or `bottom`
@@ -32,6 +32,7 @@ const showToast = (text) => {
 }
 
 function loopAndAndDomAdd (arr) {
+  console.log(arr)
   $('#content').empty()
   const content = document.getElementById('content')
   const memeDiv = document.createElement('div')
@@ -110,6 +111,20 @@ const getTrending = () => {
     .get()
     .then((data) => {
       trendingMemes(data.docs)
+    })
+}
+
+const getFavourites = () => {
+  db.collection('memes')
+    .get()
+    .then((data) => {
+      const arr = []
+      for (let i = 0; i < data.docs.length; i++) {
+        if (data.docs[i].data().likedBy.includes(user.email)) {
+          arr.push(data.docs[i])
+        }
+      }
+      loopAndAndDomAdd(arr)
     })
 }
 
