@@ -404,7 +404,7 @@ const comment = (id) => {
   let user = JSON.parse(window.localStorage.getItem('user'))
   const docRef = db.collection('memes').doc(id)
   docRef.get().then((doc) => {
-    if (doc.exists) {
+    if (doc.exists && user.email) {
       console.log(doc.data())
       docRef.update({
         comments: [...doc.data().comments, { comment: commentInp.value, user: user.email }]
@@ -432,6 +432,8 @@ const comment = (id) => {
         fatherOfComments.insertAdjacentHTML('beforebegin', commentToAppend)
         commentInp.value = ''
       })
+    } else {
+      showToast('You have to be logged to comment!')
     }
   }).catch((err) => {
     console.log(err)

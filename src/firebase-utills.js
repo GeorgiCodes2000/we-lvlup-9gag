@@ -8,6 +8,7 @@ const loginUser = () => {
     }
     window.localStorage.setItem('user', JSON.stringify(person))
     // user = firebaseApp.auth().currentUser
+    $('#authDropdown').css('visibility', 'visible')
     $('#loginBtn').text('Hello, ' + person.email)
     $('#signUpBtn').text('Logout')
   }).then(() => getDatabeseMemesData())
@@ -30,6 +31,8 @@ const registerUser = () => {
     // user = firebaseApp.auth().currentUser
     $('#loginBtn').text('Hello, ' + person.email)
     $('#signUpBtn').text('Logout')
+    $('#authDropdown').css('visibility', 'visible')
+    document.getElementById('authDropdown').style.visibility = 'show'
   }).then(() => getDatabeseMemesData())
     .catch((err) => {
       alert(err.message)
@@ -41,6 +44,8 @@ const logout = async () => {
   await firebaseApp.auth().signOut()
   $('#signUpBtn').text('Sign up')
   $('#loginBtn').text('Log in')
+  $('#authDropdown').css('visibility', 'hidden')
+  const registerForm = document.getElementById('registerForm')
   const person = {
     email: null,
     uid: null

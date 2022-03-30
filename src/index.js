@@ -1,8 +1,6 @@
 /* eslint-disable no-undef */
 // let user = {}
 
- 
-
 let user = JSON.parse(window.localStorage.getItem('user'))
 jQuery(function () { getDatabeseMemesData() })
 
@@ -65,7 +63,7 @@ if (!user || user.email === null) {
 } else {
   document.getElementById('loginBtn').innerHTML = 'Hello, ' + user.email
   document.getElementById('signUpBtn').innerHTML = 'Logout'
-  $('#authDropdown').css('visibility', 'show')
+  $('#authDropdown').css('visibility', 'visible')
   changeLoginRegister()
 }
 
