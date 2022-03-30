@@ -2,6 +2,9 @@
 // let user = {}
 
 let user = JSON.parse(window.localStorage.getItem('user'))
+
+
+
 jQuery(function () { getDatabeseMemesData() })
 
 function changeLoginRegister () {
@@ -11,15 +14,28 @@ function changeLoginRegister () {
   })
 }
 
-$('#fresh').click(() => getDatabeseFreshMemesData())
-$('#shuffle').click(() => getTrending())
+$('#fresh').click(() => {
+  getDatabeseFreshMemesData()
+  history.pushState({
+  }, 'Home', '/src/pages/fresh.html')
+})
+$('#shuffle').click(() => {
+  getTrending()
+  history.pushState({
+  }, 'Home', '/src/pages/trending.html')
+})
 $('.navbar-brand').click(() => getDatabeseMemesData())
-$('#favourites').click(() => getFavourites())
+$('#favourites').click(() => {
+  getFavourites()
+  history.pushState({
+  }, 'Home', '/src/pages/favourites.html')
+})
 
 $(function () {
   $('#uploadMeme').click(function () {
     $('#content').load('http://127.0.0.1:5500/src/pages/upload.html', function () {
-      console.log(1)
+      history.pushState({
+      }, 'Home', '/src/pages/upload.html')
     })
   })
 })
@@ -27,6 +43,8 @@ $(function () {
 $(function () {
   $('#seeUploads').click(function () {
     getUploadsOFUser()
+    history.pushState({
+    }, 'Home', '/src/pages/uploads.html')
   })
 })
 
@@ -41,11 +59,14 @@ if (!user || user.email === null) {
     $('#loginBtn').click(function () {
       $('#content').load('http://127.0.0.1:5500/src/pages/login.html', function () {
         const loginForm = document.getElementById('loginForm')
+        history.pushState({
+          id: 'about-me',
+          source: 'web'
+      }, 'Login', '/src/pages/login.html')
         if (loginForm) {
           loginForm.addEventListener('submit', (e) => {
             e.preventDefault()
             loginUser()
-
             changeLoginRegister()
           })
         }
@@ -57,6 +78,8 @@ if (!user || user.email === null) {
     $('#signUpBtn').click(function () {
       $('#content').load('http://127.0.0.1:5500/src/pages/register.html', function () {
         const registerForm = document.getElementById('registerForm')
+        history.pushState({
+        }, 'Register', '/src/pages/register.html')
         if (registerForm) {
           registerForm.addEventListener('submit', (e) => {
             e.preventDefault()
@@ -73,5 +96,3 @@ if (!user || user.email === null) {
   $('#authDropdown').css('visibility', 'visible')
   changeLoginRegister()
 }
-
-

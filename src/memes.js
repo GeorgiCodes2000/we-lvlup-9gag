@@ -14,14 +14,13 @@ function removeItemAll (arr, value) {
   return arr
 }
 
-function scrollTop(div) {
-  div.scrollTop = div.scrollHeight;
-  
-  setTimeout(function(){
-    div.scrollTop = 0;
+function scrollTop (div) {
+  div.scrollTop = div.scrollHeight
+
+  setTimeout(function () {
+    div.scrollTop = 0
   }, 500)
 }
-
 
 const showToast = (text) => {
   Toastify({
@@ -155,12 +154,12 @@ const trendingMemes = (arr) => {
 
 const favourites = (arr) => {
   const arr1 = []
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i].data().likedBy.includes(user.email)) {
-          arr1.push(arr[i])
-        }
-      }
-      loopAndAndDomAdd(arr1)
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].data().likedBy.includes(user.email)) {
+      arr1.push(arr[i])
+    }
+  }
+  loopAndAndDomAdd(arr1)
 }
 
 function updateMemeCanvas (canvas, image, topText, bottomText) {
