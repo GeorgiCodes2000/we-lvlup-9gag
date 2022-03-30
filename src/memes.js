@@ -14,6 +14,15 @@ function removeItemAll (arr, value) {
   return arr
 }
 
+function scrollTop(div) {
+  div.scrollTop = div.scrollHeight;
+  
+  setTimeout(function(){
+    div.scrollTop = 0;
+  }, 500)
+}
+
+
 const showToast = (text) => {
   Toastify({
     text: text,
@@ -38,6 +47,7 @@ function loopAndAndDomAdd (arr) {
   const memeDiv = document.createElement('div')
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
+  scrollTop(memeDiv)
 
   function toggleLike (singleMemeDiv, x, likesCount) {
     x.classList.toggle('fa-thumbs-down')
@@ -118,13 +128,7 @@ const getFavourites = () => {
   db.collection('memes')
     .get()
     .then((data) => {
-      const arr = []
-      for (let i = 0; i < data.docs.length; i++) {
-        if (data.docs[i].data().likedBy.includes(user.email)) {
-          arr.push(data.docs[i])
-        }
-      }
-      loopAndAndDomAdd(arr)
+      favourites(data.docs)
     })
 }
 
@@ -147,6 +151,16 @@ const trendingMemes = (arr) => {
   })
 
   loopAndAndDomAdd(trendingMemesArr)
+}
+
+const favourites = (arr) => {
+  const arr1 = []
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].data().likedBy.includes(user.email)) {
+          arr1.push(arr[i])
+        }
+      }
+      loopAndAndDomAdd(arr1)
 }
 
 function updateMemeCanvas (canvas, image, topText, bottomText) {
@@ -306,6 +320,12 @@ window.onscroll = async function (ev) {
     const data = await response.json()
     const memes = data.memes
     const memeDiv = document.querySelector('.memeDiv')
+    const seeMoreDiv = document.createElement('div')
+    seeMoreDiv.className = 'seeMoreDiv'
+    const seeMoreH2 = document.createElement('h2')
+    seeMoreH2.innerHTML = '😎See more memes😎'
+    seeMoreDiv.appendChild(seeMoreH2)
+    memeDiv.appendChild(seeMoreDiv)
     function toggleLike (x) {
       x.classList.toggle('fa-thumbs-down')
     }
