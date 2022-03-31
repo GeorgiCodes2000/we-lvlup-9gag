@@ -65,7 +65,6 @@ const Upload = {
 const Uploads = {
   render: () => {
     getUploadsOFUser()
-   
   }
 }
 

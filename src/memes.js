@@ -69,11 +69,20 @@ function loopAndAndDomAdd (arr) {
   content.appendChild(memeDiv)
   scrollTop(memeDiv)
 
-  function toggleLike (singleMemeDiv, x, likesCount) {
-    x.classList.toggle('fa-thumbs-down')
+  function toggleLike (singleMemeDiv, x, likesCount, liked) {
+    console.log(x)
+    if(liked) {
+      x.classList = 'fa fa-3x  fa-thumbs-up'
+      console.log('change it bra')
+    }
+    else {
+      x.classList = 'fa fa-3x  fa-thumbs-down'
+    }
+    
     like(singleMemeDiv.id, likesCount)
   }
   for (let i = 0; i < arr.length; i++) {
+    let liked = false
     const singleMemeDiv = document.createElement('div')
     singleMemeDiv.className = 'singleMemeDiv'
     singleMemeDiv.id = arr[i].id
@@ -85,7 +94,14 @@ function loopAndAndDomAdd (arr) {
     likesCount.id = 'likesCount' + arr[i].id
     const meme = document.createElement('img')
     const likeBtn = document.createElement('i')
-    likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
+    if (user && user.email && arr[i].data().likedBy.includes(user.email)){
+      likeBtn.classList = 'fa fa-3x  fa-thumbs-down'
+      liked = true
+    }
+    else {
+      likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
+    }
+    
     likeBtn.id = 'like'
     meme.src = arr[i].data().img
     meme.id = arr[i].id
@@ -102,7 +118,7 @@ function loopAndAndDomAdd (arr) {
       linkArr = arr
     })
 
-    likeBtn.addEventListener('click', (x) => toggleLike(singleMemeDiv, x.target, likesCount.id))
+    likeBtn.addEventListener('click', (x) => toggleLike(singleMemeDiv, x.target, likesCount.id, liked))
     memeDiv.appendChild(singleMemeDiv)
   }
 }
@@ -318,7 +334,9 @@ function getUploadsOFUser () {
   let listRef = storageRef.child(user.uid + '/')
   listRef.listAll()
     .then((res) => {
-      loadUploadedMemes(res.items)
+      if(res.items.length > 0) {
+        loadUploadedMemes(res.items)
+      }
     }).catch(() => {
     }).finally(() => {
 
