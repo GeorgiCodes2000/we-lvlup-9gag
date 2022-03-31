@@ -42,8 +42,10 @@ const registerUser = () => {
 
 const logout = async () => {
   await firebaseApp.auth().signOut()
-  $('#signUpBtn').text('Sign up')
-  $('#loginBtn').text('Log in')
+  $('#signUpBtn').empty()
+  $('#signUpBtn').append('<a href="#/register">Register</a>')
+  $('#loginBtn').empty()
+  $('#loginBtn').append('<a href="#/login">Login</a>')
   $('#authDropdown').css('visibility', 'hidden')
   const registerForm = document.getElementById('registerForm')
   const person = {
