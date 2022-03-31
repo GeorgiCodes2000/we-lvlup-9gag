@@ -200,6 +200,15 @@ a{
     text-decoration: none !important;
 }
 
+.collapse{
+    color: black;
+    font-weight: 700;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: black !important;
+}
+
 #loginBtn a{
     color: #fff ;
 }
@@ -207,3 +216,24 @@ a{
 #signUpBtn a{
     color: #fff;
 }
+
+#logoHome{
+    color: #000 !important;
+    font-weight: 800;
+}
+
+@media only screen and (max-width: 600px) {
+    #signUpBtn {
+        margin: 0 auto;
+        width: 50%;
+    }
+    #loginBtn {
+        margin: 10px auto;
+        width: 50%;
+    }
+  }
+
+  .memeInDiv{
+    width: 100%;
+    height: auto;
+  }

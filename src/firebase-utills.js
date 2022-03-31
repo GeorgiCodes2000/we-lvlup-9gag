@@ -11,6 +11,7 @@ const loginUser = () => {
     $('#authDropdown').css('visibility', 'visible')
     $('#loginBtn').text('Hello, ' + person.email)
     $('#signUpBtn').text('Logout')
+    location.reload()
   }).then(() => getDatabeseMemesData())
     .catch((err) => {
       alert(err.message)
@@ -52,5 +53,6 @@ const logout = async () => {
     email: null,
     uid: null
   }
+  location.reload()
   window.localStorage.setItem('user', JSON.stringify(person))
 }

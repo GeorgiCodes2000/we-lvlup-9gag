@@ -22,6 +22,8 @@ function scrollTop (div) {
   }, 500)
 }
 
+const home = document.getElementById('logoHome')
+
 const showToast = (text) => {
   Toastify({
     text: text,
@@ -87,7 +89,13 @@ function loopAndAndDomAdd (arr) {
   const memeDiv = document.createElement('div')
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
-  scrollTop(memeDiv)
+  // home.addEventListener('click', scrollTop(document.querySelector('.memeDiv')))
+  // if(window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/fresh' || window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/trending'){
+  //   scrollTop(memeDiv)
+  // }
+  if (window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/favourites') {
+    scrollTop(memeDiv)
+  }
 
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
     console.log(x)
@@ -112,6 +120,7 @@ function loopAndAndDomAdd (arr) {
     likesCount.innerHTML = arr[i].data().ups
     likesCount.id = 'likesCount' + arr[i].id
     const meme = document.createElement('img')
+    meme.classList = 'memeInDiv'
     const likeBtn = document.createElement('i')
     if (user && user.email && arr[i].data().likedBy.includes(user.email)) {
       likeBtn.classList = 'fa fa-3x  fa-thumbs-down'
