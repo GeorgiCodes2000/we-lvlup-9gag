@@ -12,9 +12,10 @@ const loginUser = () => {
     $('#loginBtn').text('Hello, ' + person.email)
     $('#signUpBtn').text('Logout')
     location.reload()
+    changeLoginRegister()
   }).then(() => getDatabeseMemesData())
     .catch((err) => {
-      alert(err.message)
+      showToast('Wrong email or password ❕', 'ff0000', 'ff0000')
       console.log(err.message)
     })
 }
@@ -34,9 +35,10 @@ const registerUser = () => {
     $('#signUpBtn').text('Logout')
     $('#authDropdown').css('visibility', 'visible')
     document.getElementById('authDropdown').style.visibility = 'show'
+    changeLoginRegister()
   }).then(() => getDatabeseMemesData())
     .catch((err) => {
-      alert(err.message)
+      showToast('Email already in use ❕', 'ff0000', 'ff0000')
       console.log(err.message)
     })
 }

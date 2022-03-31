@@ -12,8 +12,6 @@ const Login = {
         loginForm.addEventListener('submit', (e) => {
           e.preventDefault()
           loginUser()
-
-          changeLoginRegister()
         })
       }
     })
@@ -28,7 +26,6 @@ const Register = {
         registerForm.addEventListener('submit', (e) => {
           e.preventDefault()
           registerUser()
-          changeLoginRegister()
         })
       }
     })
@@ -99,7 +96,7 @@ const routes = [
 ]
 const parseLocation = () => location.hash.slice(1).toLowerCase() || '/'
 
-const findComponentByPath = (path, routes) => routes.find(r => r.path.match(new RegExp(`^\\${path}$`, 'gm'))) || undefined;
+const findComponentByPath = (path, routes) => routes.find(r => r.path.match(new RegExp(`^\\${path}$`, 'gm'))) || undefined
 
 const router = () => {
   // Find the component based on the current path

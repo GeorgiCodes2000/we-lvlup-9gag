@@ -15,7 +15,6 @@ function removeItemAll (arr, value) {
 }
 
 function scrollTop (div) {
-  console.log('here')
   div.scrollTop = div.scrollHeight
 
   setTimeout(function () {
@@ -25,21 +24,40 @@ function scrollTop (div) {
 
 const home = document.getElementById('logoHome')
 
-const showToast = (text) => {
-  Toastify({
-    text: text,
-    duration: 3000,
-    destination: '',
-    newWindow: true,
-    close: true,
-    gravity: 'top', // `top` or `bottom`
-    position: 'center', // `left`, `center` or `right`
-    stopOnFocus: true, // Prevents dismissing of toast on hover
-    style: {
-      background: 'linear-gradient(to right, #00b09b, #96c93d)'
-    },
-    onClick: function () {} // Callback after click
-  }).showToast()
+function showToast (text, col1, col2) {
+  if(arguments.length > 1) {
+    Toastify({
+      text: text,
+      duration: 3000,
+      destination: '',
+      newWindow: true,
+      close: true,
+      gravity: 'top', // `top` or `bottom`
+      position: 'center', // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      style: {
+        background: `linear-gradient(to right, #${col1}, #${col2})`
+      },
+      onClick: function () {} // Callback after click
+    }).showToast()
+  }
+  else {
+    Toastify({
+      text: text,
+      duration: 3000,
+      destination: '',
+      newWindow: true,
+      close: true,
+      gravity: 'top', // `top` or `bottom`
+      position: 'center', // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      style: {
+        background: 'linear-gradient(to right, #00b09b, #96c93d)'
+      },
+      onClick: function () {} // Callback after click
+    }).showToast()
+  }
+  
 }
 
 let linkArr = []
@@ -47,10 +65,8 @@ let linkIndex = 0
 
 function getDetails (arr, i) {
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
-    console.log(x)
     if (liked) {
       x.classList = 'fa fa-3x  fa-thumbs-up'
-      console.log('change it bra')
     } else {
       x.classList = 'fa fa-3x  fa-thumbs-down'
     }
@@ -84,7 +100,6 @@ function getDetails (arr, i) {
 }
 
 function loopAndAndDomAdd (arr) {
-  console.log(arr)
   $('#content').empty()
   const content = document.getElementById('content')
   const memeDiv = document.createElement('div')
@@ -103,12 +118,10 @@ function loopAndAndDomAdd (arr) {
 
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
     if (window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/favourites') {
-      console.log(singleMemeDiv)
       singleMemeDiv.remove()
     }
     if (liked) {
       x.classList = 'fa fa-3x  fa-thumbs-up'
-      console.log('change it bra')
     } else {
       x.classList = 'fa fa-3x  fa-thumbs-down'
     }
@@ -205,7 +218,6 @@ const freshMemes = (arr) => {
 
 const trendingMemes = (arr) => {
   const trendingMemesArr = arr.slice().sort(function (a, b) {
-    console.log(a.data().ups)
     return (b.data().ups) - (a.data().ups)
   })
 
@@ -271,7 +283,6 @@ $(function () {
 
         imageFileInput[0].addEventListener('change', () => {
           const imageDataUrl = URL.createObjectURL(imageFileInput[0].files[0])
-          console.log(imageDataUrl)
           image = new Image()
           image.src = imageDataUrl
           image.addEventListener('load', () => {
@@ -303,22 +314,19 @@ function uploadMeme () {
     contentType: file.type
   }
   const task = ref.child(name).put(file, metadata)
-  console.log(task)
-  showToast('Image successfully uploaded')
+  showToast('Image successfully uploaded 👌')
 }
 
 function preview (e) {
   const file = document.getElementById('photo')
   const image = document.getElementById('image')
   const [preview] = file.files
-  console.log(preview)
   if (preview) {
     image.src = URL.createObjectURL(preview)
   }
 }
 
 function loadUploadedMemes (arr) {
-  console.log(arr)
   $('#content').empty()
   const content = document.getElementById('content')
   const memeDiv = document.createElement('div')
@@ -338,7 +346,6 @@ function loadUploadedMemes (arr) {
     memeDiv.append(aBtn)
   }
 
-  console.log(arr.length)
   for (let i = 0; i < arr.length; i++) {
     arr[i].getDownloadURL().then(url => {
       const singleMemeDiv = document.createElement('div')
@@ -356,7 +363,7 @@ function loadUploadedMemes (arr) {
           likedBy: []
         })
           .then((docRef) => {
-            showToast('Meme posted !')
+            showToast('Meme posted 👏')
           }).catch((error) => {
             alert(error)
           })
@@ -423,7 +430,7 @@ window.onscroll = async function (ev) {
           let updateLikes = parseInt(likesCount.innerHTML)
           likesCount.innerHTML = ++updateLikes
           saveLikedPost(element.src, author.innerHTML, likes.innerHTML)
-          showToast('Post saved to your liked')
+          showToast('Post saved to favourites 👑')
         })
         meme.src = memes[i].preview[3]
         singleMemeDiv.appendChild(title)
@@ -438,34 +445,31 @@ window.onscroll = async function (ev) {
 }
 
 const like = (id, likesCount) => {
-  console.log(id)
   let user = JSON.parse(window.localStorage.getItem('user'))
   const docRef = db.collection('memes').doc(id)
 
   docRef.get().then((doc) => {
     if (user.email && doc.exists && doc.data().likedBy.includes(user.email) === false) {
-      console.log('Document data:', doc.data().likedBy)
       docRef.update({
         ups: Number(doc.data().ups) + 1,
         likedBy: [...doc.data().likedBy, user.email]
       }).then(() => {
-        showToast('Post liked')
+        showToast('You like this post 🔥')
         let ups = doc.data().ups + 1
         document.getElementById(likesCount).innerHTML = ups
       })
     } else if (user.email) {
       // doc.data() will be undefined in this case
-      console.log(doc.data().likedBy)
       docRef.update({
         ups: Number(doc.data().ups) - 1,
         likedBy: removeItemAll(doc.data().likedBy, user.email)
       }).then(() => {
-        showToast('You no longer like the post')
+        showToast('You no longer like the post 💔')
         let ups = doc.data().ups - 1
         document.getElementById(likesCount).innerHTML = ups
       })
     } else {
-      showToast('You have to be logged to like')
+      showToast('You have to be logged to like 🕵', 'ff0000', 'ff0000')
     }
   }).catch((error) => {
     console.log('Error getting document:', error)
@@ -504,17 +508,15 @@ const showComments = (id) => {
 }
 
 const comment = (id) => {
-  console.log(id)
   const commentInp = document.getElementById('commentInp')
   let user = JSON.parse(window.localStorage.getItem('user'))
   const docRef = db.collection('memes').doc(id)
   docRef.get().then((doc) => {
     if (doc.exists && user.email) {
-      console.log(doc.data())
       docRef.update({
         comments: [...doc.data().comments, { comment: commentInp.value, user: user.email }]
       }).then(() => {
-        showToast('Comment added')
+        showToast('Comment added 😍')
         const fatherOfComments = document.getElementById('commentsFather')
         const commentToAppend =
         `
@@ -538,7 +540,7 @@ const comment = (id) => {
         commentInp.value = ''
       })
     } else {
-      showToast('You have to be logged to comment!')
+      showToast('You have to be logged to comment 🕵', 'ff0000', 'ff0000')
     }
   }).catch((err) => {
     console.log(err)
