@@ -319,8 +319,16 @@ function loadUploadedMemes (arr) {
   content.appendChild(memeDiv)
   if (arr.length === 0) {
     const noMemes = document.createElement('h1')
+    const uploadBtn = document.createElement('button')
+    const aBtn = document.createElement('a')
+    aBtn.href = '#/upload'
+    aBtn.append(uploadBtn)
+    uploadBtn.style.color = '#fff'
+    uploadBtn.classList = 'btn btn-info'
+    uploadBtn.innerHTML = 'Upload now'
     noMemes.innerHTML = 'You havent uploaded yet'
     memeDiv.append(noMemes)
+    memeDiv.append(aBtn)
   }
 
   console.log(arr.length)
@@ -361,7 +369,7 @@ function getUploadsOFUser () {
   let listRef = storageRef.child(user.uid + '/')
   listRef.listAll()
     .then((res) => {
-      if (res.items.length > 0) {
+      if (res.items) {
         loadUploadedMemes(res.items)
       }
     }).catch(() => {

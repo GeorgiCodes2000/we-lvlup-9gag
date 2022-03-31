@@ -95,7 +95,7 @@ const routes = [
   { path: '/favourites', component: Favourites },
   { path: '/upload', component: Upload },
   { path: '/uploads', component: Uploads },
-  { path: '/post', component: Post },
+  { path: '/post', component: Post }
 ]
 const parseLocation = () => location.hash.slice(1).toLowerCase() || '/'
 
