@@ -196,3 +196,14 @@ body{
     color: #fff;
 }
 
+a{
+    text-decoration: none !important;
+}
+
+#loginBtn a{
+    color: #fff ;
+}
+
+#signUpBtn a{
+    color: #fff;
+}

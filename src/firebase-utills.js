@@ -8,8 +8,6 @@ const loginUser = () => {
     }
     window.localStorage.setItem('user', JSON.stringify(person))
     // user = firebaseApp.auth().currentUser
-    history.pushState({
-    }, 'Home', '/src/pages/index.html')
     $('#authDropdown').css('visibility', 'visible')
     $('#loginBtn').text('Hello, ' + person.email)
     $('#signUpBtn').text('Logout')
@@ -31,8 +29,6 @@ const registerUser = () => {
     }
     window.localStorage.setItem('user', JSON.stringify(person))
     // user = firebaseApp.auth().currentUser
-    history.pushState({
-    }, 'Home', '/src/pages/index.html')
     $('#loginBtn').text('Hello, ' + person.email)
     $('#signUpBtn').text('Logout')
     $('#authDropdown').css('visibility', 'visible')

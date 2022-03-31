@@ -17,7 +17,7 @@ function removeItemAll (arr, value) {
 function scrollTop (div) {
   div.scrollTop = div.scrollHeight
 
-  setTimeout(function () {
+  setTimeout(function() {
     div.scrollTop = 0
   }, 500)
 }
@@ -37,6 +37,27 @@ const showToast = (text) => {
     },
     onClick: function () {} // Callback after click
   }).showToast()
+}
+
+let linkArr = []
+let linkIndex = 0
+
+function getDetails (arr, i) {
+  $('#content').load('http://127.0.0.1:5501/src/pages/post.html', function () {
+    showComments(arr[i].id)
+    document.getElementById('change').id = arr[i].id
+    const postImg = document.getElementById('post-img')
+    const postLike = document.getElementById('post-like')
+    const postLikeBtn = document.getElementById('post-like-button')
+    postLike.innerHTML = arr[i].data().ups
+    postImg.src = arr[i].data().img
+    postLikeBtn.addEventListener('click', (x) => toggleLike(arr[i], x.target, postLike.id))
+    const commentForm = document.getElementById('comment-form')
+    commentForm.addEventListener('submit', (e) => {
+      e.preventDefault()
+      comment(arr[i].id)
+    })
+  })
 }
 
 function loopAndAndDomAdd (arr) {
@@ -68,28 +89,17 @@ function loopAndAndDomAdd (arr) {
     likeBtn.id = 'like'
     meme.src = arr[i].data().img
     meme.id = arr[i].id
+    const link = document.createElement('a')
+    link.href = '#/post'
+    link.appendChild(meme)
     singleMemeDiv.appendChild(author)
-    singleMemeDiv.appendChild(meme)
+    singleMemeDiv.appendChild(link)
     singleMemeDiv.appendChild(likesCount)
     singleMemeDiv.appendChild(likeBtn)
-    meme.addEventListener('click', () => {
-      (function a () {
-        $('#content').load('http://127.0.0.1:5500/src/pages/post.html', function () {
-          showComments(arr[i].id)
-          document.getElementById('change').id = arr[i].id
-          const postImg = document.getElementById('post-img')
-          const postLike = document.getElementById('post-like')
-          const postLikeBtn = document.getElementById('post-like-button')
-          postLike.innerHTML = arr[i].data().ups
-          postImg.src = arr[i].data().img
-          postLikeBtn.addEventListener('click', (x) => toggleLike(arr[i], x.target, postLike.id))
-          const commentForm = document.getElementById('comment-form')
-          commentForm.addEventListener('submit', (e) => {
-            e.preventDefault()
-            comment(arr[i].id)
-          })
-        })
-      })()
+
+    link.addEventListener('click', () => {
+      linkIndex = i
+      linkArr = arr
     })
 
     likeBtn.addEventListener('click', (x) => toggleLike(singleMemeDiv, x.target, likesCount.id))
@@ -194,7 +204,7 @@ function updateMemeCanvas (canvas, image, topText, bottomText) {
 
 $(function () {
   $('#generateMemeBtn').click(function () {
-    $('#content').load('http://127.0.0.1:5500/src/pages/generateMeme.html', function () {
+    $('#content').load('http://127.0.0.1:5501/src/pages/generateMeme.html', function () {
       const imageFileInput = $('#imageFileInput')
       const topText = $('#topTextInput')
       const bottomText = $('#bottomTextInput')
@@ -268,6 +278,12 @@ function loadUploadedMemes (arr) {
   const memeDiv = document.createElement('div')
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
+  if(arr.length === 0) {
+    const noMemes = document.createElement('h1')
+    noMemes.innerHTML = 'You havent uploaded yet'
+    memeDiv.append(noMemes)
+  }
+ 
   console.log(arr.length)
   for (let i = 0; i < arr.length; i++) {
     arr[i].getDownloadURL().then(url => {
@@ -310,7 +326,9 @@ function getUploadsOFUser () {
         uploadedMemes.push(itemRef)
       })
     }).catch(() => {
-    }).finally(() => loadUploadedMemes(uploadedMemes))
+    }).finally(() => {
+      loadUploadedMemes(uploadedMemes)
+    })
 }
 
 window.onscroll = async function (ev) {
@@ -472,117 +490,7 @@ const comment = (id) => {
   }).catch((err) => {
     console.log(err)
   })
-
-  // docRef.get().then((doc) => {
-  //   if (user.email && doc.exists && doc.data().likedBy.includes(user.email) === false) {
-  //     console.log('Document data:', doc.data().likedBy)
-  //     docRef.update({
-  //       ups: Number(doc.data().ups) + 1,
-  //       likedBy: [...doc.data().likedBy, user.email]
-  //     }).then(() => {
-  //       showToast('Post liked')
-  //       let ups = doc.data().ups + 1
-  //       document.getElementById(likesCount).innerHTML = ups
-  //     })
-  //   } else if (user.email) {
-  //     // doc.data() will be undefined in this case
-  //     console.log(doc.data().likedBy)
-  //     docRef.update({
-  //       ups: Number(doc.data().ups) - 1,
-  //       likedBy: removeItemAll(doc.data().likedBy, user.email)
-  //     }).then(() => {
-  //       showToast('You no longer like the post')
-  //       let ups = doc.data().ups - 1
-  //       document.getElementById(likesCount).innerHTML = ups
-  //     })
-  //   } else {
-  //     showToast('You have to be logged to like')
-  //   }
-  // }).catch((error) => {
-  //   console.log('Error getting document:', error)
-  // })
 }
-
-// const saveLikedPost = (src, author, ups) => {
-//   let user = JSON.parse(window.localStorage.getItem('user'))
-//   let parsedUps = parseInt(ups)
-//   if (user.email != null) {
-//     db.collection(user.uid).add({
-//       img: src,
-//       comments: [],
-//       author: author,
-//       ups: parsedUps
-//     })
-//       .then((docRef) => {
-//         console.log(docRef.id)
-//       }).catch((error) => {
-//         alert(error)
-//       })
-//   }
-// }
-
-// const showLikedPosts = () => {
-//   db.collection(user.uid)
-//     .get()
-//     .then((data) => {
-//       logLiked(data.docs)
-//     })
-// }
-
-// const dislike = (post) => {
-//   db.collection(user.uid).doc(post).delete()
-//     .then(() => console.log('Remove from liked'))
-//   document.getElementById(post).remove()
-//   showToast('You no longer like this post')
-// }
-
-// const logLiked = (arr) => {
-//   $('#content').empty()
-//   const content = document.getElementById('content')
-//   const memeDiv = document.createElement('div')
-//   memeDiv.className = 'memeDiv'
-//   content.appendChild(memeDiv)
-
-//   function toggleLike (id, x) {
-//     if (x.classList.value === 'fa fa-3x  fa-thumbs-down') {
-//       x.classList = 'fa fa-3x  fa-thumbs-up'
-//     } else {
-//       x.classList = 'fa fa-3x  fa-thumbs-down'
-//     }
-//     dislike(id)
-//   }
-
-//   for (let i = 0; i < arr.length; i++) {
-//     const singleMemeDiv = document.createElement('div')
-//     singleMemeDiv.className = 'singleMemeDiv'
-//     singleMemeDiv.id = arr[i].id
-//     const author = document.createElement('h3')
-//     author.innerHTML = arr[i].data().author
-//     const likesCount = document.createElement('button')
-//     likesCount.classList = 'btn btn-info'
-//     likesCount.innerHTML = arr[i].data().ups
-//     likesCount.id = 'likesCount'
-//     const meme = document.createElement('img')
-//     const likeBtn = document.createElement('i')
-//     likeBtn.classList = 'fa fa-3x  fa-thumbs-down'
-//     likeBtn.id = 'like'
-//     meme.src = arr[i].data().img
-//     meme.id = arr[i].id
-//     singleMemeDiv.appendChild(author)
-//     singleMemeDiv.appendChild(meme)
-//     singleMemeDiv.appendChild(likesCount)
-//     singleMemeDiv.appendChild(likeBtn)
-//     likeBtn.addEventListener('click', (x) => toggleLike(meme.id, x.target))
-//     memeDiv.appendChild(singleMemeDiv)
-//   }
-//   const seeMoreDiv = document.createElement('div')
-//   seeMoreDiv.className = 'seeMoreDiv'
-//   const seeMoreH2 = document.createElement('h2')
-//   seeMoreH2.innerHTML = '😎See more memes😎'
-//   seeMoreDiv.appendChild(seeMoreH2)
-//   memeDiv.appendChild(seeMoreDiv)
-// }
-
 // FILL WITH MEMES
 // async function fillBase () {
 //   const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
