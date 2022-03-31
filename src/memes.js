@@ -255,11 +255,6 @@ function uploadMeme () {
   const task = ref.child(name).put(file, metadata)
   console.log(task)
   showToast('Image successfully uploaded')
-  // task.then(snapshot => snapshot.ref.getDownloadURL())
-  // .then(url => {
-  //     const image = document.getElementById('image')
-  //     image.src = url
-  // })
 }
 
 function preview (e) {
@@ -273,6 +268,7 @@ function preview (e) {
 }
 
 function loadUploadedMemes (arr) {
+  console.log(arr)
   $('#content').empty()
   const content = document.getElementById('content')
   const memeDiv = document.createElement('div')
@@ -289,6 +285,7 @@ function loadUploadedMemes (arr) {
     arr[i].getDownloadURL().then(url => {
       const singleMemeDiv = document.createElement('div')
       const post = document.createElement('button')
+      post.className = 'btn btn-success'
       post.innerHTML = 'Post'
       post.addEventListener('click', () => {
         db.collection('memes').add({
@@ -301,7 +298,7 @@ function loadUploadedMemes (arr) {
           likedBy: []
         })
           .then((docRef) => {
-            console.log(docRef.id)
+            showToast('Meme posted !')
           }).catch((error) => {
             alert(error)
           })
@@ -317,17 +314,14 @@ function loadUploadedMemes (arr) {
 }
 
 function getUploadsOFUser () {
-  const uploadedMemes = []
   let storageRef = storage.ref()
   let listRef = storageRef.child(user.uid + '/')
   listRef.listAll()
     .then((res) => {
-      res.items.forEach((itemRef) => {
-        uploadedMemes.push(itemRef)
-      })
+      loadUploadedMemes(res.items)
     }).catch(() => {
     }).finally(() => {
-      loadUploadedMemes(uploadedMemes)
+
     })
 }
 

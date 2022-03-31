@@ -64,7 +64,7 @@ const Upload = {
 
 const Uploads = {
   render: () => {
-    setTimeout( getUploadsOFUser(), 7000);
+    getUploadsOFUser()
    
   }
 }
