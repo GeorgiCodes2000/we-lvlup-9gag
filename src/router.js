@@ -6,8 +6,6 @@ const HomeComponent = {
 
 const Login = {
   render: () => {
-    console.log(' i have to render login')
-
     $('#content').load('http://127.0.0.1:5501/src/pages/login.html', function () {
       const loginForm = document.getElementById('loginForm')
       if (loginForm) {
@@ -39,18 +37,21 @@ const Register = {
 
 const FreshMemes = {
   render: () => {
+    document.body.scrollTop = document.documentElement.scrollTop = 0
     getDatabeseFreshMemesData()
   }
 }
 
 const TrendingMemes = {
   render: () => {
+    document.body.scrollTop = document.documentElement.scrollTop = 0
     getTrending()
   }
 }
 
 const Favourites = {
   render: () => {
+    document.body.scrollTop = document.documentElement.scrollTop = 0
     getFavourites()
   }
 }
@@ -70,7 +71,6 @@ const Uploads = {
 
 const Post = {
   render: () => {
-    console.log('hey yo')
     getDetails(linkArr, linkIndex)
   }
 }
@@ -108,8 +108,6 @@ const router = () => {
   const { component = ErrorComponent } = findComponentByPath(path, routes) || {}
   // Render the component in the "app" placeholder
   component.render()
-  console.log(findComponentByPath(path, routes))
-  console.log(routes)
 }
 
 window.addEventListener('hashchange', router)

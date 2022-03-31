@@ -15,6 +15,7 @@ function removeItemAll (arr, value) {
 }
 
 function scrollTop (div) {
+  console.log('here')
   div.scrollTop = div.scrollHeight
 
   setTimeout(function () {
@@ -89,16 +90,22 @@ function loopAndAndDomAdd (arr) {
   const memeDiv = document.createElement('div')
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
-  // home.addEventListener('click', scrollTop(document.querySelector('.memeDiv')))
-  // if(window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/fresh' || window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/trending'){
-  //   scrollTop(memeDiv)
-  // }
+
   if (window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/favourites') {
     scrollTop(memeDiv)
   }
 
+  if (window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/favourites' && arr.length === 0) {
+    const noLikes = document.createElement('h2')
+    noLikes.innerHTML = 'You have not liked anything yet 🖖'
+    memeDiv.appendChild(noLikes)
+  }
+
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
-    console.log(x)
+    if (window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/favourites') {
+      console.log(singleMemeDiv)
+      singleMemeDiv.remove()
+    }
     if (liked) {
       x.classList = 'fa fa-3x  fa-thumbs-up'
       console.log('change it bra')
@@ -326,7 +333,7 @@ function loadUploadedMemes (arr) {
     uploadBtn.style.color = '#fff'
     uploadBtn.classList = 'btn btn-info'
     uploadBtn.innerHTML = 'Upload now'
-    noMemes.innerHTML = 'You havent uploaded yet'
+    noMemes.innerHTML = 'You havent uploaded yet 😭'
     memeDiv.append(noMemes)
     memeDiv.append(aBtn)
   }
@@ -484,7 +491,6 @@ const showComments = (id) => {
                   ${doc.data().comments[i].user}
                   <span class="text-dark ms-2">${doc.data().comments[i].comment}</span>
                 </h6>
-                <p class="mb-0">2 days ago</p>
               </div>
             </div>
           </div>
@@ -521,7 +527,7 @@ const comment = (id) => {
                   ${user.email}
                   <span class="text-dark ms-2">${commentInp.value}</span>
                 </h6>
-                <p class="mb-0">2 days ago</p>
+                
               </div>
             </div>
           </div>
