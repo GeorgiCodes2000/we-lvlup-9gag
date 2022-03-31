@@ -17,7 +17,7 @@ function removeItemAll (arr, value) {
 function scrollTop (div) {
   div.scrollTop = div.scrollHeight
 
-  setTimeout(function() {
+  setTimeout(function () {
     div.scrollTop = 0
   }, 500)
 }
@@ -43,7 +43,27 @@ let linkArr = []
 let linkIndex = 0
 
 function getDetails (arr, i) {
+  function toggleLike (singleMemeDiv, x, likesCount, liked) {
+    console.log(x)
+    if (liked) {
+      x.classList = 'fa fa-3x  fa-thumbs-up'
+      console.log('change it bra')
+    } else {
+      x.classList = 'fa fa-3x  fa-thumbs-down'
+    }
+
+    like(singleMemeDiv.id, likesCount)
+  }
+
   $('#content').load('http://127.0.0.1:5501/src/pages/post.html', function () {
+    let liked = false
+    const likeBtn = document.getElementById('post-like-button')
+    if (user && user.email && arr[i].data().likedBy.includes(user.email)) {
+      likeBtn.classList = 'fa fa-3x  fa-thumbs-down'
+      liked = true
+    } else {
+      likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
+    }
     showComments(arr[i].id)
     document.getElementById('change').id = arr[i].id
     const postImg = document.getElementById('post-img')
@@ -51,7 +71,7 @@ function getDetails (arr, i) {
     const postLikeBtn = document.getElementById('post-like-button')
     postLike.innerHTML = arr[i].data().ups
     postImg.src = arr[i].data().img
-    postLikeBtn.addEventListener('click', (x) => toggleLike(arr[i], x.target, postLike.id))
+    postLikeBtn.addEventListener('click', (x) => toggleLike(arr[i], x.target, postLike.id, liked))
     const commentForm = document.getElementById('comment-form')
     commentForm.addEventListener('submit', (e) => {
       e.preventDefault()
@@ -71,14 +91,13 @@ function loopAndAndDomAdd (arr) {
 
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
     console.log(x)
-    if(liked) {
+    if (liked) {
       x.classList = 'fa fa-3x  fa-thumbs-up'
       console.log('change it bra')
-    }
-    else {
+    } else {
       x.classList = 'fa fa-3x  fa-thumbs-down'
     }
-    
+
     like(singleMemeDiv.id, likesCount)
   }
   for (let i = 0; i < arr.length; i++) {
@@ -94,14 +113,13 @@ function loopAndAndDomAdd (arr) {
     likesCount.id = 'likesCount' + arr[i].id
     const meme = document.createElement('img')
     const likeBtn = document.createElement('i')
-    if (user && user.email && arr[i].data().likedBy.includes(user.email)){
+    if (user && user.email && arr[i].data().likedBy.includes(user.email)) {
       likeBtn.classList = 'fa fa-3x  fa-thumbs-down'
       liked = true
-    }
-    else {
+    } else {
       likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
     }
-    
+
     likeBtn.id = 'like'
     meme.src = arr[i].data().img
     meme.id = arr[i].id
@@ -290,12 +308,12 @@ function loadUploadedMemes (arr) {
   const memeDiv = document.createElement('div')
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
-  if(arr.length === 0) {
+  if (arr.length === 0) {
     const noMemes = document.createElement('h1')
     noMemes.innerHTML = 'You havent uploaded yet'
     memeDiv.append(noMemes)
   }
- 
+
   console.log(arr.length)
   for (let i = 0; i < arr.length; i++) {
     arr[i].getDownloadURL().then(url => {
@@ -334,7 +352,7 @@ function getUploadsOFUser () {
   let listRef = storageRef.child(user.uid + '/')
   listRef.listAll()
     .then((res) => {
-      if(res.items.length > 0) {
+      if (res.items.length > 0) {
         loadUploadedMemes(res.items)
       }
     }).catch(() => {
