@@ -57,7 +57,6 @@ function showToast (text, col1, col2) {
       onClick: function () {} // Callback after click
     }).showToast()
   }
-  
 }
 
 let linkArr = []

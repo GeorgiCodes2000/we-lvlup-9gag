@@ -25,6 +25,7 @@ const registerUser = () => {
   const password = document.getElementById('password')
 
   auth.createUserWithEmailAndPassword(email.value, password.value).then((res) => {
+    console.log(res)
     const person = {
       email: firebaseApp.auth().currentUser.email,
       uid: firebaseApp.auth().currentUser.uid
@@ -40,6 +41,32 @@ const registerUser = () => {
     .catch((err) => {
       showToast('Email already in use ❕', 'ff0000', 'ff0000')
       console.log(err.message)
+    })
+}
+
+const signInWithGoogle = () => {
+  const provider = new firebase.auth.GoogleAuthProvider()
+  console.log(provider)
+  console.log(auth)
+  firebase.auth().signInWithPopup(provider)
+    .then((result) => {
+      const name = result.user.displayName
+      const email = result.user.email
+      const profilePic = result.user.photoURL
+      const person = {
+        name,
+        email,
+        profilePic
+      }
+      window.localStorage.setItem('user', JSON.stringify(person))
+      $('#authDropdown').css('visibility', 'visible')
+      $('#loginBtn').text('Hello, ' + person.email)
+      $('#signUpBtn').text('Logout')
+      location.reload()
+      changeLoginRegister()
+    })
+    .catch((error) => {
+      console.log(error)
     })
 }
 

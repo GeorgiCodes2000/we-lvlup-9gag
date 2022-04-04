@@ -7,6 +7,11 @@ const HomeComponent = {
 const Login = {
   render: () => {
     $('#content').load('http://127.0.0.1:5501/src/pages/login.html', function () {
+      const googleReg = document.getElementById('googleReg')
+      googleReg.addEventListener('click', (e) => {
+        e.preventDefault()
+        signInWithGoogle()
+      })
       const loginForm = document.getElementById('loginForm')
       if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -21,6 +26,11 @@ const Login = {
 const Register = {
   render: () => {
     $('#content').load('http://127.0.0.1:5501/src/pages/register.html', function () {
+      const googleReg = document.getElementById('googleReg')
+      googleReg.addEventListener('click', (e) => {
+        e.preventDefault()
+        signInWithGoogle()
+      })
       const registerForm = document.getElementById('registerForm')
       if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
