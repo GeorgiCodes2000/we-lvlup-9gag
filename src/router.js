@@ -58,21 +58,27 @@ const TrendingMemes = {
 
 const Favourites = {
   render: () => {
-    document.body.scrollTop = document.documentElement.scrollTop = 0
-    getFavourites()
+    if (user && user.email) {
+      document.body.scrollTop = document.documentElement.scrollTop = 0
+      getFavourites()
+    }
   }
 }
 
 const Upload = {
   render: () => {
-    $('#content').load('http://127.0.0.1:5501/src/pages/upload.html', function () {
-    })
+    if (user && user.email) {
+      $('#content').load('http://127.0.0.1:5501/src/pages/upload.html', function () {
+      })
+    }
   }
 }
 
 const Uploads = {
   render: () => {
-    getUploadsOFUser()
+    if (user && user.email) {
+      getUploadsOFUser()
+    }
   }
 }
 
