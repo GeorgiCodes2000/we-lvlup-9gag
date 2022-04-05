@@ -53,10 +53,12 @@ const signInWithGoogle = () => {
       const name = result.user.displayName
       const email = result.user.email
       const profilePic = result.user.photoURL
+      const uid = result.user.uid
       const person = {
         name,
         email,
-        profilePic
+        profilePic,
+        uid
       }
       window.localStorage.setItem('user', JSON.stringify(person))
       $('#authDropdown').css('visibility', 'visible')

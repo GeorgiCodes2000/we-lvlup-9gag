@@ -25,7 +25,7 @@ function scrollTop (div) {
 const home = document.getElementById('logoHome')
 
 function showToast (text, col1, col2) {
-  if(arguments.length > 1) {
+  if (arguments.length > 1) {
     Toastify({
       text: text,
       duration: 3000,
