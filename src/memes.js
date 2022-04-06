@@ -2,6 +2,25 @@
 /* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
 
+function IsImageOk(img) {
+  // During the onload event, IE correctly identifies any images that
+  // weren’t downloaded as not complete. Others should too. Gecko-based
+  // browsers act like NS4 in that they report this incorrectly.
+  if (!img.complete) {
+      return false
+  }
+
+  // However, they do have two very useful properties: naturalWidth and
+  // naturalHeight. These give the true size of the image. If it failed
+  // to load, either of these should be zero.
+  if (img.naturalWidth === 0) {
+      return false
+  }
+
+  // No other way of checking: assume it’s ok.
+  return true
+}
+
 function removeItemAll (arr, value) {
   let i = 0
   while (i < arr.length) {
@@ -159,7 +178,7 @@ function loopAndAndDomAdd (arr) {
 
     likeBtn.id = 'like'
     meme.src = arr[i].data().img
-    meme.id = arr[i].id
+    meme.id = 'img' + arr[i].id
     const link = document.createElement('a')
     link.href = '#/post'
     link.appendChild(meme)
@@ -167,6 +186,13 @@ function loopAndAndDomAdd (arr) {
     singleMemeDiv.appendChild(link)
     singleMemeDiv.appendChild(likesCount)
     singleMemeDiv.appendChild(likeBtn)
+    
+    // if (IsImageOk(document.getElementById('img'+arr[i].id))===false) {
+    //   console.log(document.getElementById('img'+arr[i].id))
+    //   // const divToRemove = meme.closest('div')
+    //   // console.log(divToRemove)
+    //   // divToRemove.style.display = 'none'
+    // }
 
     link.addEventListener('click', () => {
       linkId = arr[i].id
@@ -177,6 +203,11 @@ function loopAndAndDomAdd (arr) {
       liked = !liked
     })
     memeDiv.appendChild(singleMemeDiv)
+     if (IsImageOk(document.getElementById('img'+arr[i].id))===false) {
+      const divToRemove = document.getElementById('img'+arr[i].id).closest('div')
+      console.log(divToRemove)
+      divToRemove.style.display = 'none'
+    }
   }
 }
 
@@ -324,6 +355,7 @@ function uploadMeme () {
     contentType: file.type
   }
   const task = ref.child(name).put(file, metadata)
+  console.log(task)
   showToast('Image successfully uploaded 👌')
 }
 
@@ -360,8 +392,11 @@ function loadUploadedMemes (arr) {
     arr[i].getDownloadURL().then(url => {
       const singleMemeDiv = document.createElement('div')
       const post = document.createElement('button')
+      const deleteImg = document.createElement('button')
       post.className = 'btn btn-success'
       post.innerHTML = 'Post'
+      deleteImg.innerHTML = 'Delete'
+      deleteImg.className = 'btn btn-danger'
       post.addEventListener('click', () => {
         db.collection('memes').add({
           img: url,
@@ -379,11 +414,19 @@ function loadUploadedMemes (arr) {
           })
       })
       singleMemeDiv.className = 'singleMemeDiv'
+      singleMemeDiv.id = arr[i].id
       const meme = document.createElement('img')
       meme.src = url
       singleMemeDiv.appendChild(meme)
       singleMemeDiv.appendChild(post)
+      singleMemeDiv.appendChild(deleteImg)
       memeDiv.appendChild(singleMemeDiv)
+      deleteImg.addEventListener('click', () => {
+        arr[i].delete().then(() => {
+         showToast('Image deleted')
+         document.getElementById(arr[i].id).remove()
+        })
+      })
     })
   }
 }
