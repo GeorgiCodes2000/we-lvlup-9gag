@@ -84,7 +84,7 @@ const Uploads = {
 
 const Post = {
   render: () => {
-    getDetails(linkArr, linkIndex)
+    getDetails(linkId)
   }
 }
 

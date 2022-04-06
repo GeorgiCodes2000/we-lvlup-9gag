@@ -40,8 +40,7 @@ function showToast (text, col1, col2) {
       },
       onClick: function () {} // Callback after click
     }).showToast()
-  }
-  else {
+  } else {
     Toastify({
       text: text,
       duration: 3000,
@@ -59,10 +58,9 @@ function showToast (text, col1, col2) {
   }
 }
 
-let linkArr = []
-let linkIndex = 0
+let linkId = ''
 
-function getDetails (arr, i) {
+function getDetails (id) {
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
     if (liked) {
       x.classList = 'fa fa-3x  fa-thumbs-up'
@@ -74,28 +72,38 @@ function getDetails (arr, i) {
   }
 
   $('#content').load('http://127.0.0.1:5501/src/pages/post.html', function () {
-    let liked = false
-    const likeBtn = document.getElementById('post-like-button')
-    if (user && user.email && arr[i].data().likedBy.includes(user.email)) {
-      likeBtn.classList = 'fa fa-3x  fa-thumbs-down'
-      liked = true
-    } else {
-      likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
-    }
-    showComments(arr[i].id)
-    document.getElementById('change').id = arr[i].id
-    const postImg = document.getElementById('post-img')
-    const postLike = document.getElementById('post-like')
-    const postLikeBtn = document.getElementById('post-like-button')
-    postLike.innerHTML = arr[i].data().ups
-    postImg.src = arr[i].data().img
-    postLikeBtn.addEventListener('click', (x) => toggleLike(arr[i], x.target, postLike.id, liked))
-    const commentForm = document.getElementById('comment-form')
-    commentForm.addEventListener('submit', (e) => {
-      e.preventDefault()
-      comment(arr[i].id)
+    const docRef = db.collection('memes').doc(id)
+
+    docRef.get().then((doc) => {
+      let liked = false
+      const likeBtn = document.getElementById('post-like-button')
+      if (user && user.email && doc.data().likedBy.includes(user.email)) {
+        likeBtn.classList = 'fa fa-3x  fa-thumbs-down'
+        liked = true
+      } else {
+        likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
+      }
+      showComments(doc.id)
+      document.getElementById('change').id = doc.id
+      const postImg = document.getElementById('post-img')
+      const postLike = document.getElementById('post-like')
+      const postLikeBtn = document.getElementById('post-like-button')
+      postLike.innerHTML = doc.data().ups
+      postImg.src = doc.data().img
+      postLikeBtn.addEventListener('click', (x) => {
+        toggleLike(doc, x.target, postLike.id, liked)
+        liked = !liked
+      })
+      const commentForm = document.getElementById('comment-form')
+      commentForm.addEventListener('submit', (e) => {
+        e.preventDefault()
+        comment(doc.id)
+      })
     })
-  })
+      
+    }).catch((error) => {
+      console.log('Error getting document:', error)
+    })
 }
 
 function loopAndAndDomAdd (arr) {
@@ -120,6 +128,7 @@ function loopAndAndDomAdd (arr) {
       singleMemeDiv.remove()
     }
     if (liked) {
+      console.log(x)
       x.classList = 'fa fa-3x  fa-thumbs-up'
     } else {
       x.classList = 'fa fa-3x  fa-thumbs-down'
@@ -160,11 +169,13 @@ function loopAndAndDomAdd (arr) {
     singleMemeDiv.appendChild(likeBtn)
 
     link.addEventListener('click', () => {
-      linkIndex = i
-      linkArr = arr
+      linkId = arr[i].id
     })
 
-    likeBtn.addEventListener('click', (x) => toggleLike(singleMemeDiv, x.target, likesCount.id, liked))
+    likeBtn.addEventListener('click', (x) => {
+      toggleLike(singleMemeDiv, x.target, likesCount.id, liked)
+      liked = !liked
+    })
     memeDiv.appendChild(singleMemeDiv)
   }
 }
@@ -383,6 +394,7 @@ function getUploadsOFUser () {
   listRef.listAll()
     .then((res) => {
       if (res.items) {
+        console.log(res.items)
         loadUploadedMemes(res.items)
       }
     }).catch(() => {
@@ -480,6 +492,7 @@ const showComments = (id) => {
   const docRef = db.collection('memes').doc(id)
   docRef.get().then((doc) => {
     if (doc.exists) {
+      document.getElementById('detailsAuthor').innerHTML = doc.data().author
       const fatherOfComments = document.getElementById('commentsFather')
 
       for (let i = 0; i < doc.data().comments.length; i++) {
