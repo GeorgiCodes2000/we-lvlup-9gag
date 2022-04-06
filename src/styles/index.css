@@ -141,7 +141,7 @@ body{
 }
 
 .singleMemeDiv {
-    margin: 10px;
+    margin: 30px;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -191,9 +191,11 @@ body{
     margin: 40px 0;
 }
 
-#likesCount{
-    margin-top: 10px;
-    color: #fff;
+.likesCount{
+    color: white !important;
+    font-size: 1.3em;
+    font-weight: 800;
+    padding: 10px;
 }
 
 a{
@@ -231,6 +233,24 @@ a{
         margin: 10px auto;
         width: 50%;
     }
+    .likeCountAndBtnDiv{
+        width: 70%;
+    }
+
+    #googleReg{
+        font-size: 14px;
+    }
+  }
+
+  @media only screen and (min-width: 480px) {
+    
+   .likeCountAndBtnDiv{
+        width: 70%;
+    }
+
+   
+
+    
   }
 
   .memeInDiv{
@@ -241,3 +261,18 @@ a{
   #googlePic{
       font-size: 20px;
   }
+
+  .likeCountAndBtnDiv{
+      margin-top: 10px;
+      display: flex;
+      width: 40%;
+      align-items: center;
+      justify-content: space-around;
+  }
+
+  .dark-mode {
+    background-color: black;
+    color: white;
+  }
+
+   

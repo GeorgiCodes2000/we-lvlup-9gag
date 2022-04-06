@@ -2,8 +2,6 @@
 /* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
 
-
-
 function removeItemAll (arr, value) {
   let i = 0
   while (i < arr.length) {
@@ -102,8 +100,6 @@ function getDetails (id) {
         comment(doc.id)
       })
     })
-  }).catch((error) => {
-    console.log('Error getting document:', error)
   })
 }
 
@@ -144,8 +140,9 @@ function loopAndAndDomAdd (arr) {
     singleMemeDiv.id = arr[i].id
     const author = document.createElement('h3')
     author.innerHTML = arr[i].data().author
+    const likeCountAndBtnDiv = document.createElement('div')
     const likesCount = document.createElement('button')
-    likesCount.classList = 'btn btn-info'
+    likesCount.classList = 'btn btn-secondary likesCount'
     likesCount.innerHTML = arr[i].data().ups
     likesCount.id = 'likesCount' + arr[i].id
     const meme = document.createElement('img')
@@ -163,11 +160,13 @@ function loopAndAndDomAdd (arr) {
     meme.id = 'img' + arr[i].id
     const link = document.createElement('a')
     link.href = '#/post'
+    linkId = arr[i].id
     link.appendChild(meme)
+    likeCountAndBtnDiv.className = 'likeCountAndBtnDiv'
+    likeCountAndBtnDiv.append(likesCount, likeBtn)
     singleMemeDiv.appendChild(author)
     singleMemeDiv.appendChild(link)
-    singleMemeDiv.appendChild(likesCount)
-    singleMemeDiv.appendChild(likeBtn)
+    singleMemeDiv.appendChild(likeCountAndBtnDiv)
 
     link.addEventListener('click', () => {
       linkId = arr[i].id
@@ -178,12 +177,6 @@ function loopAndAndDomAdd (arr) {
       liked = !liked
     })
     memeDiv.appendChild(singleMemeDiv)
-    // setTimeout(() => {
-    //   if (document.getElementById('img' + arr[i].id) && IsImageOk(document.getElementById('img' + arr[i].id)) === false) {
-    //     const divToRemove = document.getElementById('img' + arr[i].id).closest('div')
-    //     divToRemove.style.display = 'none'
-    //   }
-    // }, 1000)
   }
 }
 
@@ -386,57 +379,57 @@ function getUploadsOFUser () {
     })
 }
 
-window.onscroll = async function (ev) {
-  if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-    const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
-    const data = await response.json()
-    const memes = data.memes
-    const memeDiv = document.querySelector('.memeDiv')
-    const seeMoreDiv = document.createElement('div')
-    seeMoreDiv.className = 'seeMoreDiv'
-    const seeMoreH2 = document.createElement('h2')
-    seeMoreH2.innerHTML = '😎See more memes😎'
-    seeMoreDiv.appendChild(seeMoreH2)
-    memeDiv.appendChild(seeMoreDiv)
-    function toggleLike (x) {
-      x.classList.toggle('fa-thumbs-down')
-    }
+// window.onscroll = async function (ev) {
+//   if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+//     const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
+//     const data = await response.json()
+//     const memes = data.memes
+//     const memeDiv = document.querySelector('.memeDiv')
+//     const seeMoreDiv = document.createElement('div')
+//     seeMoreDiv.className = 'seeMoreDiv'
+//     const seeMoreH2 = document.createElement('h2')
+//     seeMoreH2.innerHTML = '😎See more memes😎'
+//     seeMoreDiv.appendChild(seeMoreH2)
+//     memeDiv.appendChild(seeMoreDiv)
+//     function toggleLike (x) {
+//       x.classList.toggle('fa-thumbs-down')
+//     }
 
-    for (let i = 0; i < memes.length; i++) {
-      if (memes[i].preview[3] !== undefined) {
-        const singleMemeDiv = document.createElement('div')
-        singleMemeDiv.className = 'singleMemeDiv'
-        const meme = document.createElement('img')
-        const likeBtn = document.createElement('i')
-        const title = document.createElement('h3')
-        const likesCount = document.createElement('button')
-        likesCount.classList = 'btn btn-info'
-        likesCount.id = 'likesCount'
-        likesCount.innerHTML = memes[i].ups
-        title.className = 'author'
-        title.innerHTML = 'Author: ' + memes[i].author
-        likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
-        likeBtn.id = 'like'
-        likeBtn.addEventListener('click', (e) => {
-          const author = e.target.parentElement.children[0]
-          const element = e.target.parentElement.children[1]
-          const likes = e.target.parentElement.children[2]
-          let updateLikes = parseInt(likesCount.innerHTML)
-          likesCount.innerHTML = ++updateLikes
-          saveLikedPost(element.src, author.innerHTML, likes.innerHTML)
-          showToast('Post saved to favourites 👑')
-        })
-        meme.src = memes[i].preview[3]
-        singleMemeDiv.appendChild(title)
-        singleMemeDiv.appendChild(meme)
-        singleMemeDiv.appendChild(likesCount)
-        singleMemeDiv.appendChild(likeBtn)
-        likeBtn.addEventListener('click', (x) => toggleLike(x.target))
-        memeDiv.appendChild(singleMemeDiv)
-      }
-    }
-  }
-}
+//     for (let i = 0; i < memes.length; i++) {
+//       if (memes[i].preview[3] !== undefined) {
+//         const singleMemeDiv = document.createElement('div')
+//         singleMemeDiv.className = 'singleMemeDiv'
+//         const meme = document.createElement('img')
+//         const likeBtn = document.createElement('i')
+//         const title = document.createElement('h3')
+//         const likesCount = document.createElement('button')
+//         likesCount.classList = 'btn btn-info'
+//         likesCount.id = 'likesCount'
+//         likesCount.innerHTML = memes[i].ups
+//         title.className = 'author'
+//         title.innerHTML = 'Author: ' + memes[i].author
+//         likeBtn.classList = 'fa fa-3x  fa-thumbs-up'
+//         likeBtn.id = 'like'
+//         likeBtn.addEventListener('click', (e) => {
+//           const author = e.target.parentElement.children[0]
+//           const element = e.target.parentElement.children[1]
+//           const likes = e.target.parentElement.children[2]
+//           let updateLikes = parseInt(likesCount.innerHTML)
+//           likesCount.innerHTML = ++updateLikes
+//           saveLikedPost(element.src, author.innerHTML, likes.innerHTML)
+//           showToast('Post saved to favourites 👑')
+//         })
+//         meme.src = memes[i].preview[3]
+//         singleMemeDiv.appendChild(title)
+//         singleMemeDiv.appendChild(meme)
+//         singleMemeDiv.appendChild(likesCount)
+//         singleMemeDiv.appendChild(likeBtn)
+//         likeBtn.addEventListener('click', (x) => toggleLike(x.target))
+//         memeDiv.appendChild(singleMemeDiv)
+//       }
+//     }
+//   }
+// }
 
 const like = (id, likesCount) => {
   let user = JSON.parse(window.localStorage.getItem('user'))

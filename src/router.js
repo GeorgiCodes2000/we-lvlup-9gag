@@ -13,6 +13,9 @@ const Login = {
         signInWithGoogle()
       })
       const loginForm = document.getElementById('loginForm')
+      if (window.localStorage.getItem('theme') === 'dark') {
+        loginForm.parentElement.style.border = '3px solid white'
+      }
       if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
           e.preventDefault()
@@ -32,6 +35,9 @@ const Register = {
         signInWithGoogle()
       })
       const registerForm = document.getElementById('registerForm')
+      if (window.localStorage.getItem('theme') === 'dark') {
+        registerForm.parentElement.style.border = '3px solid white'
+      }
       if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
           e.preventDefault()
@@ -125,3 +131,5 @@ const router = () => {
 
 window.addEventListener('hashchange', router)
 window.addEventListener('load', router)
+
+console.log(linkId)
