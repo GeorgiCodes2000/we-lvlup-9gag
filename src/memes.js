@@ -2,24 +2,7 @@
 /* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
 
-function IsImageOk(img) {
-  // During the onload event, IE correctly identifies any images that
-  // weren’t downloaded as not complete. Others should too. Gecko-based
-  // browsers act like NS4 in that they report this incorrectly.
-  if (!img.complete) {
-      return false
-  }
 
-  // However, they do have two very useful properties: naturalWidth and
-  // naturalHeight. These give the true size of the image. If it failed
-  // to load, either of these should be zero.
-  if (img.naturalWidth === 0) {
-      return false
-  }
-
-  // No other way of checking: assume it’s ok.
-  return true
-}
 
 function removeItemAll (arr, value) {
   let i = 0
@@ -119,10 +102,9 @@ function getDetails (id) {
         comment(doc.id)
       })
     })
-      
-    }).catch((error) => {
-      console.log('Error getting document:', error)
-    })
+  }).catch((error) => {
+    console.log('Error getting document:', error)
+  })
 }
 
 function loopAndAndDomAdd (arr) {
@@ -186,13 +168,6 @@ function loopAndAndDomAdd (arr) {
     singleMemeDiv.appendChild(link)
     singleMemeDiv.appendChild(likesCount)
     singleMemeDiv.appendChild(likeBtn)
-    
-    // if (IsImageOk(document.getElementById('img'+arr[i].id))===false) {
-    //   console.log(document.getElementById('img'+arr[i].id))
-    //   // const divToRemove = meme.closest('div')
-    //   // console.log(divToRemove)
-    //   // divToRemove.style.display = 'none'
-    // }
 
     link.addEventListener('click', () => {
       linkId = arr[i].id
@@ -203,11 +178,12 @@ function loopAndAndDomAdd (arr) {
       liked = !liked
     })
     memeDiv.appendChild(singleMemeDiv)
-     if (IsImageOk(document.getElementById('img'+arr[i].id))===false) {
-      const divToRemove = document.getElementById('img'+arr[i].id).closest('div')
-      console.log(divToRemove)
-      divToRemove.style.display = 'none'
-    }
+    // setTimeout(() => {
+    //   if (document.getElementById('img' + arr[i].id) && IsImageOk(document.getElementById('img' + arr[i].id)) === false) {
+    //     const divToRemove = document.getElementById('img' + arr[i].id).closest('div')
+    //     divToRemove.style.display = 'none'
+    //   }
+    // }, 1000)
   }
 }
 
@@ -354,9 +330,33 @@ function uploadMeme () {
   const metadata = {
     contentType: file.type
   }
+
+  let next = function (snapshot) { console.log('next') }
+  let error = function () { console.log('error') }
+  let complete = function () {
+    console.log(ref.child(name).getDownloadURL().then(url => {
+      db.collection('memes').add({
+        img: url,
+        comments: [],
+        author: user.email,
+        uploader: user.email,
+        ups: 0,
+        uploaded: new Date().toLocaleString(),
+        likedBy: []
+      })
+        .then((docRef) => {
+          showToast('Meme posted 👏')
+        }).catch((error) => {
+          alert(error)
+        })
+    }))
+  }
   const task = ref.child(name).put(file, metadata)
-  console.log(task)
-  showToast('Image successfully uploaded 👌')
+  task.on(
+    firebase.storage.TaskEvent.STATE_CHANGED,
+    next,
+    error,
+    complete)
 }
 
 function preview (e) {
@@ -369,80 +369,20 @@ function preview (e) {
 }
 
 function loadUploadedMemes (arr) {
-  $('#content').empty()
-  const content = document.getElementById('content')
-  const memeDiv = document.createElement('div')
-  memeDiv.className = 'memeDiv'
-  content.appendChild(memeDiv)
-  if (arr.length === 0) {
-    const noMemes = document.createElement('h1')
-    const uploadBtn = document.createElement('button')
-    const aBtn = document.createElement('a')
-    aBtn.href = '#/upload'
-    aBtn.append(uploadBtn)
-    uploadBtn.style.color = '#fff'
-    uploadBtn.classList = 'btn btn-info'
-    uploadBtn.innerHTML = 'Upload now'
-    noMemes.innerHTML = 'You havent uploaded yet 😭'
-    memeDiv.append(noMemes)
-    memeDiv.append(aBtn)
-  }
-
+  const passArr = []
   for (let i = 0; i < arr.length; i++) {
-    arr[i].getDownloadURL().then(url => {
-      const singleMemeDiv = document.createElement('div')
-      const post = document.createElement('button')
-      const deleteImg = document.createElement('button')
-      post.className = 'btn btn-success'
-      post.innerHTML = 'Post'
-      deleteImg.innerHTML = 'Delete'
-      deleteImg.className = 'btn btn-danger'
-      post.addEventListener('click', () => {
-        db.collection('memes').add({
-          img: url,
-          comments: [],
-          author: user.email,
-          uploader: user.email,
-          ups: 0,
-          uploaded: new Date().toLocaleString(),
-          likedBy: []
-        })
-          .then((docRef) => {
-            showToast('Meme posted 👏')
-          }).catch((error) => {
-            alert(error)
-          })
-      })
-      singleMemeDiv.className = 'singleMemeDiv'
-      singleMemeDiv.id = arr[i].id
-      const meme = document.createElement('img')
-      meme.src = url
-      singleMemeDiv.appendChild(meme)
-      singleMemeDiv.appendChild(post)
-      singleMemeDiv.appendChild(deleteImg)
-      memeDiv.appendChild(singleMemeDiv)
-      deleteImg.addEventListener('click', () => {
-        arr[i].delete().then(() => {
-         showToast('Image deleted')
-         document.getElementById(arr[i].id).remove()
-        })
-      })
-    })
+    if (arr[i].data().author === user.email) {
+      passArr.push(arr[i])
+      loopAndAndDomAdd(passArr)
+    }
   }
 }
 
 function getUploadsOFUser () {
-  let storageRef = storage.ref()
-  let listRef = storageRef.child(user.uid + '/')
-  listRef.listAll()
-    .then((res) => {
-      if (res.items) {
-        console.log(res.items)
-        loadUploadedMemes(res.items)
-      }
-    }).catch(() => {
-    }).finally(() => {
-
+  db.collection('memes')
+    .get()
+    .then((data) => {
+      loadUploadedMemes(data.docs)
     })
 }
 
