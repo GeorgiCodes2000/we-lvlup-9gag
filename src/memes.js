@@ -125,7 +125,7 @@ function loopAndAndDomAdd (arr) {
   }
 
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
-    if (window.location.href === `${currentUrlsrc}/pages/index.html#/favourites`) {
+    if (window.location.href === `${currentUrl}/pages/index.html#/favourites`) {
       singleMemeDiv.remove()
     }
     if (liked) {
