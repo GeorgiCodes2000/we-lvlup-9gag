@@ -163,6 +163,7 @@ function loopAndAndDomAdd (arr) {
     linkId = arr[i].id
     link.appendChild(meme)
     likeCountAndBtnDiv.className = 'likeCountAndBtnDiv'
+
     likeCountAndBtnDiv.append(likesCount, likeBtn)
     singleMemeDiv.appendChild(author)
     singleMemeDiv.appendChild(link)
