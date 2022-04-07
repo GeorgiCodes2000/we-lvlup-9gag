@@ -6,7 +6,6 @@ let currentUrl = currentLocation.slice(0, indexOf)
 // console.log(currentUrl)
 // console.log(currentUrl)
 
-
 const HomeComponent = {
   render: () => {
     jQuery(function () { getDatabeseMemesData() })
@@ -61,6 +60,13 @@ const FreshMemes = {
   render: () => {
     document.body.scrollTop = document.documentElement.scrollTop = 0
     getDatabeseFreshMemesData()
+  }
+}
+
+const GenerateMeme = {
+  render: () => {
+    document.body.scrollTop = document.documentElement.scrollTop = 0
+    generetaMeme()
   }
 }
 
@@ -119,6 +125,7 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/register', component: Register },
   { path: '/fresh', component: FreshMemes },
+  { path: '/generateMeme', component: GenerateMeme },
   { path: '/trending', component: TrendingMemes },
   { path: '/favourites', component: Favourites },
   { path: '/upload', component: Upload },

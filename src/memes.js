@@ -279,7 +279,7 @@ function updateMemeCanvas (canvas, image, topText, bottomText) {
   ctx.fillText(bottomText, width / 2, height - yOffset)
 }
 
-$(function () {
+$(function generetaMeme () {
   $('#generateMemeBtn').click(function () {
     $('#content').load(`${currentUrl}src/pages/generateMeme.html`, function () {
       const imageFileInput = $('#imageFileInput')

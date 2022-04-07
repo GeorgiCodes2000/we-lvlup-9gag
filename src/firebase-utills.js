@@ -35,7 +35,8 @@ const registerUser = () => {
     $('#loginBtn').text('Hello, ' + person.email)
     $('#signUpBtn').text('Logout')
     $('#authDropdown').css('visibility', 'visible')
-    document.getElementById('authDropdown').style.visibility = 'show'
+    location.reload()
+    // document.getElementById('authDropdown').style.visibility = 'show'
     changeLoginRegister()
   }).then(() => getDatabeseMemesData())
     .catch((err) => {
