@@ -1,3 +1,12 @@
+let currentLocation = window.location.href
+let indexOf = currentLocation.indexOf('src')
+let currentUrl = currentLocation.slice(0, indexOf)
+
+// console.log(indexOf)
+// console.log(currentUrl)
+// console.log(currentUrl)
+
+
 const HomeComponent = {
   render: () => {
     jQuery(function () { getDatabeseMemesData() })
@@ -6,7 +15,7 @@ const HomeComponent = {
 
 const Login = {
   render: () => {
-    $('#content').load('http://127.0.0.1:5501/src/pages/login.html', function () {
+    $('#content').load(`${currentUrl}src/pages/login.html`, function () {
       const googleReg = document.getElementById('googleReg')
       googleReg.addEventListener('click', (e) => {
         e.preventDefault()
@@ -28,7 +37,7 @@ const Login = {
 
 const Register = {
   render: () => {
-    $('#content').load('http://127.0.0.1:5501/src/pages/register.html', function () {
+    $('#content').load(`${currentUrl}src/pages/register.html`, function () {
       const googleReg = document.getElementById('googleReg')
       googleReg.addEventListener('click', (e) => {
         e.preventDefault()
@@ -74,7 +83,7 @@ const Favourites = {
 const Upload = {
   render: () => {
     if (user && user.email) {
-      $('#content').load('http://127.0.0.1:5501/src/pages/upload.html', function () {
+      $('#content').load(`${currentUrl}src/pages/upload.html`, function () {
       })
     }
   }

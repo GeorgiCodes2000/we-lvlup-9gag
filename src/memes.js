@@ -2,6 +2,10 @@
 /* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
 
+// let currentLocation = window.location.href
+// let indexOf = currentLocation.indexOf('src')
+// let currentUrl = currentLocation.slice(0, indexOf)
+
 function removeItemAll (arr, value) {
   let i = 0
   while (i < arr.length) {
@@ -71,7 +75,7 @@ function getDetails (id) {
     like(singleMemeDiv.id, likesCount)
   }
 
-  $('#content').load('http://127.0.0.1:5501/src/pages/post.html', function () {
+  $('#content').load(`${currentUrl}src/pages/post.html`, function () {
     const docRef = db.collection('memes').doc(id)
 
     docRef.get().then((doc) => {
@@ -110,18 +114,18 @@ function loopAndAndDomAdd (arr) {
   memeDiv.className = 'memeDiv'
   content.appendChild(memeDiv)
 
-  if (window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/favourites') {
+  if (window.location.href === `${currentUrl}src/pages/index.html#/favourites`) {
     scrollTop(memeDiv)
   }
 
-  if (window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/favourites' && arr.length === 0) {
+  if (window.location.href === `${currentUrl}src/pages/index.html#/favourites` && arr.length === 0) {
     const noLikes = document.createElement('h2')
     noLikes.innerHTML = 'You have not liked anything yet 🖖'
     memeDiv.appendChild(noLikes)
   }
 
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
-    if (window.location.href === 'http://127.0.0.1:5501/src/pages/index.html#/favourites') {
+    if (window.location.href === `${currentUrlsrc}/pages/index.html#/favourites`) {
       singleMemeDiv.remove()
     }
     if (liked) {
@@ -277,7 +281,7 @@ function updateMemeCanvas (canvas, image, topText, bottomText) {
 
 $(function () {
   $('#generateMemeBtn').click(function () {
-    $('#content').load('http://127.0.0.1:5501/src/pages/generateMeme.html', function () {
+    $('#content').load(`${currentUrl}src/pages/generateMeme.html`, function () {
       const imageFileInput = $('#imageFileInput')
       const topText = $('#topTextInput')
       const bottomText = $('#bottomTextInput')
