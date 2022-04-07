@@ -6,6 +6,9 @@
 // let indexOf = currentLocation.indexOf('src')
 // let currentUrl = currentLocation.slice(0, indexOf)
 
+const parser = new DOMParser()
+
+
 function removeItemAll (arr, value) {
   let i = 0
   while (i < arr.length) {
@@ -125,7 +128,7 @@ function loopAndAndDomAdd (arr) {
   }
 
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
-    if (window.location.href === `${currentUrl}/pages/index.html#/favourites`) {
+    if (window.location.href === `${currentUrl}src/pages/index.html#/favourites`) {
       singleMemeDiv.remove()
     }
     if (liked) {
