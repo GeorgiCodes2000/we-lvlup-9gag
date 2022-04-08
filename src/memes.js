@@ -542,7 +542,7 @@ const comment = (id) => {
         fatherOfComments.insertAdjacentHTML('beforebegin', commentToAppend)
         commentInp.value = ''
       })
-    } else if (commentInp.value.length < 1 && user && user.email) {
+    } else if (commentInp.value.length <= 1 && user && user.email) {
       showToast('Comment should be atleast 2 characters 🕵', 'ff0000', 'ff0000')
     } else {
       showToast('You have to be logged to comment 🕵', 'ff0000', 'ff0000')
