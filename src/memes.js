@@ -395,7 +395,7 @@ function getUploadsOFUser () {
 }
 
 // window.onscroll = async function (ev) {
-//   if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+//   if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight && (window.location.href === `${currentUrl}src/pages/index.html#/home` || window.location.href === `${currentUrl}src/pages/index.html#/trending` || window.location.href === `${currentUrl}src/pages/index.html#/fresh`)) {
 //     const response = await fetch('https://meme-api.herokuapp.com/gimme/40')
 //     const data = await response.json()
 //     const memes = data.memes
@@ -515,7 +515,7 @@ const comment = (id) => {
   let user = JSON.parse(window.localStorage.getItem('user'))
   const docRef = db.collection('memes').doc(id)
   docRef.get().then((doc) => {
-    if (doc.exists && user && user.email) {
+    if (doc.exists && user && user.email && commentInp.value.length > 1) {
       docRef.update({
         comments: [...doc.data().comments, { comment: commentInp.value, user: user.email }]
       }).then(() => {
@@ -542,6 +542,8 @@ const comment = (id) => {
         fatherOfComments.insertAdjacentHTML('beforebegin', commentToAppend)
         commentInp.value = ''
       })
+    } else if (commentInp.value.length < 1 && user && user.email) {
+      showToast('Comment should be atleast 2 characters 🕵', 'ff0000', 'ff0000')
     } else {
       showToast('You have to be logged to comment 🕵', 'ff0000', 'ff0000')
     }
