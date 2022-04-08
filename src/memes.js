@@ -111,6 +111,7 @@ function getDetails (id) {
 }
 
 function loopAndAndDomAdd (arr) {
+  console.log(arr)
   $('#content').empty()
   const content = document.getElementById('content')
   const memeDiv = document.createElement('div')
@@ -125,6 +126,12 @@ function loopAndAndDomAdd (arr) {
     const noLikes = document.createElement('h2')
     noLikes.innerHTML = 'You have not liked anything yet 🖖'
     memeDiv.appendChild(noLikes)
+  }
+
+  if (window.location.href === `${currentUrl}src/pages/index.html#/uploads` && arr.length === 0) {
+    const noUploads = document.createElement('h2')
+    noUploads.innerHTML = 'You have not posted anything yet 🖖'
+    memeDiv.appendChild(noUploads)
   }
 
   function toggleLike (singleMemeDiv, x, likesCount, liked) {
@@ -374,9 +381,9 @@ function loadUploadedMemes (arr) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].data().author === user.email) {
       passArr.push(arr[i])
-      loopAndAndDomAdd(passArr)
     }
   }
+  loopAndAndDomAdd(passArr)
 }
 
 function getUploadsOFUser () {
@@ -444,7 +451,7 @@ const like = (id, likesCount) => {
   const docRef = db.collection('memes').doc(id)
 
   docRef.get().then((doc) => {
-    if (user.email && doc.exists && doc.data().likedBy.includes(user.email) === false) {
+    if (doc.exists && user && user.email && doc.data().likedBy.includes(user.email) === false) {
       docRef.update({
         ups: Number(doc.data().ups) + 1,
         likedBy: [...doc.data().likedBy, user.email]
@@ -453,7 +460,7 @@ const like = (id, likesCount) => {
         let ups = doc.data().ups + 1
         document.getElementById(likesCount).innerHTML = ups
       })
-    } else if (user.email) {
+    } else if (user && user.email) {
       // doc.data() will be undefined in this case
       docRef.update({
         ups: Number(doc.data().ups) - 1,
@@ -508,7 +515,7 @@ const comment = (id) => {
   let user = JSON.parse(window.localStorage.getItem('user'))
   const docRef = db.collection('memes').doc(id)
   docRef.get().then((doc) => {
-    if (doc.exists && user.email) {
+    if (doc.exists && user && user.email) {
       docRef.update({
         comments: [...doc.data().comments, { comment: commentInp.value, user: user.email }]
       }).then(() => {
